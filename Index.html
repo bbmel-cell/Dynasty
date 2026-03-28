@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynasty Compass</title>
+<style>
+:root{
+  --bg:#0d0f14;--bg2:#12151c;--bg3:#181d26;--card:#1c2130;
+  --bd:#ffffff0f;--bd2:#ffffff1a;--bd3:#ffffff2a;
+  --tx:#e8edf5;--mid:#7c8799;--dim:#404857;
+  --teal:#06d6a0;--teal2:#04b386;--teal-glow:rgba(6,214,160,.12);--teal-dim:rgba(6,214,160,.08);
+  --co:#3b82f6;--wn:#ec4899;--ri:#06d6a0;--re:#f97316;--tr:#a78bfa;
+  --co-bg:rgba(59,130,246,.12);--wn-bg:rgba(236,72,153,.12);
+  --ri-bg:rgba(6,214,160,.10);--re-bg:rgba(249,115,22,.10);--tr-bg:rgba(167,139,250,.10);
+  --red:#ef4444;--gold:#fbbf24;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--tx);font-family:'Barlow',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* LOADER */
+#sc-load{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.4rem;}
+#sc-load.active{display:flex;}
+.ld-logo{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:2.2rem;letter-spacing:.06em;text-transform:uppercase;}
+.ld-logo span{color:var(–teal);}
+.ld-track{width:200px;height:2px;background:var(–bd2);border-radius:2px;overflow:hidden;position:relative;}
+.ld-fill{position:absolute;inset:0;background:var(–teal);animation:sw 1.8s ease-in-out infinite;}
+@keyframes sw{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+.ld-txt{font-size:.72rem;color:var(–dim);letter-spacing:.14em;text-transform:uppercase;font-family:‘Barlow Condensed’,sans-serif;font-weight:600;}
+
+/* LANDING */
+#sc-land{min-height:100vh;display:none;flex-direction:column;}
+#sc-land.active{display:flex;}
+.ln{padding:1.25rem 2.5rem;display:flex;align-items:center;border-bottom:1px solid var(–bd);background:var(–bg2);}
+.logo{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:1.4rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;}
+.logo span{color:var(–teal);}
+.logo-sub{font-size:.62rem;color:var(–dim);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;font-family:‘Barlow Condensed’,sans-serif;font-weight:600;}
+.lb{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 2rem;}
+.li{max-width:540px;width:100%;}
+.ley{font-size:.68rem;color:var(–teal);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.25rem;display:flex;align-items:center;gap:.6rem;font-family:‘Barlow Condensed’,sans-serif;font-weight:700;}
+.ley::before{content:’’;display:block;width:20px;height:2px;background:var(–teal);}
+.lh{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:clamp(3rem,6vw,5rem);line-height:.95;letter-spacing:.02em;text-transform:uppercase;margin-bottom:1rem;}
+.lh span{color:var(–teal);display:block;}
+.lsub{font-size:.93rem;color:var(–mid);line-height:1.65;font-weight:300;margin-bottom:2.5rem;max-width:460px;}
+.itabs{display:flex;border:1px solid var(–bd2);border-radius:10px 10px 0 0;overflow:hidden;background:var(–bg3);}
+.itab{flex:1;padding:.7rem 1rem;text-align:center;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;background:transparent;border:none;color:var(–dim);font-family:‘Barlow Condensed’,sans-serif;transition:all .2s;border-bottom:2px solid transparent;}
+.itab.active{color:var(–teal);background:var(–card);border-bottom-color:var(–teal);}
+.ibox{background:var(–card);border:1px solid var(–bd2);border-top:none;border-radius:0 0 10px 10px;padding:1.5rem;}
+.ip{display:none;}.ip.active{display:block;}
+.ilbl{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(–mid);margin-bottom:.5rem;display:block;font-family:‘Barlow Condensed’,sans-serif;}
+.ifield{width:100%;padding:.82rem 1rem;border:1px solid var(–bd2);border-radius:8px;font-family:‘Barlow’,sans-serif;font-size:.88rem;color:var(–tx);background:var(–bg3);transition:border-color .2s;outline:none;margin-bottom:.75rem;}
+.ifield:focus{border-color:var(–teal);}
+.ifield::placeholder{color:var(–dim);}
+.ihint{font-size:.68rem;color:var(–dim);margin-bottom:1.25rem;line-height:1.5;}
+.gobtn{width:100%;padding:.9rem;background:var(–teal);color:var(–bg);border:none;border-radius:8px;font-family:‘Barlow Condensed’,sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.gobtn:hover{background:var(–teal2);}
+.lfeats{display:flex;gap:1.5rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(–bd);}
+.lf{flex:1;}.lf-i{font-size:1.1rem;margin-bottom:.4rem;}.lf-t{font-size:.82rem;font-weight:600;margin-bottom:2px;}.lf-d{font-size:.7rem;color:var(–dim);line-height:1.5;}
+
+/* APP NAV */
+.anav{position:sticky;top:0;z-index:100;background:rgba(13,15,20,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(–bd);height:58px;display:flex;align-items:center;padding:0 2.5rem;gap:1.5rem;}
+.ndiv{width:1px;height:18px;background:var(–bd2);}
+.ncrumb{font-size:.75rem;font-weight:600;color:var(–dim);cursor:pointer;transition:color .2s;font-family:‘Barlow Condensed’,sans-serif;letter-spacing:.04em;text-transform:uppercase;}
+.ncrumb:hover{color:var(–tx);}.ncrumb.cur{color:var(–teal);}
+.nsp{flex:1;}
+.nlname{font-family:‘Barlow Condensed’,sans-serif;font-size:.72rem;color:var(–dim);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.nbk{display:flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(–mid);cursor:pointer;padding:.32rem .75rem;border-radius:6px;border:1px solid var(–bd2);background:var(–bg3);transition:all .15s;font-family:‘Barlow Condensed’,sans-serif;}
+.nbk:hover{color:var(–teal);border-color:var(–teal);}
+
+/* PAGE */
+.pg{max-width:1200px;margin:0 auto;padding:2.5rem 2.5rem 5rem;}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(–bd);}
+.ph-ey{font-family:‘Barlow Condensed’,sans-serif;font-size:.66rem;font-weight:700;color:var(–teal);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.5rem;}
+.ph-t{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:clamp(2rem,4vw,3rem);letter-spacing:.02em;text-transform:uppercase;line-height:1;}
+.ph-t span{color:var(–teal);}
+.ph-m{font-size:.8rem;color:var(–mid);margin-top:.4rem;font-weight:300;}
+.phsts{display:flex;gap:1.75rem;}
+.phst{text-align:right;}
+.phst-v{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:2rem;color:var(–teal);line-height:1;}
+.phst-l{font-size:.6rem;color:var(–dim);text-transform:uppercase;letter-spacing:.1em;margin-top:2px;font-family:‘Barlow Condensed’,sans-serif;font-weight:600;}
+
+/* SECTION LABEL */
+.sl{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;}
+.sl-t{font-family:‘Barlow Condensed’,sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(–teal);white-space:nowrap;}
+.sl-r{flex:1;height:1px;background:var(–bd);}
+.sl-n{font-size:.62rem;color:var(–dim);white-space:nowrap;font-family:‘Barlow Condensed’,sans-serif;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+
+/* ARCH BADGE */
+.ab{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .65rem;border-radius:4px;font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid;white-space:nowrap;font-family:‘Barlow Condensed’,sans-serif;}
+
+/* HISTORY BADGES */
+.hbadge{display:inline-flex;align-items:center;gap:.25rem;padding:.16rem .5rem;border-radius:4px;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-family:‘Barlow Condensed’,sans-serif;white-space:nowrap;}
+.hbadge.champ{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.25);}
+.hbadge.runner{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2);}
+.hbadge.last{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.2);}
+.hbadge.playoffs{background:rgba(6,214,160,.1);color:var(–teal);border:1px solid rgba(6,214,160,.2);}
+
+/* WINDOW MAP */
+.wmap{background:var(–card);border:1px solid var(–bd2);border-radius:12px;overflow:hidden;margin-bottom:3rem;}
+.wm-hd{display:grid;grid-template-columns:210px 1fr 1fr 1fr 130px;border-bottom:1px solid var(–bd);}
+.wm-hc{padding:.6rem 1rem;font-family:‘Barlow Condensed’,sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(–dim);border-right:1px solid var(–bd);}
+.wm-hc:last-child{border-right:none;text-align:center;}
+.wm-row{display:grid;grid-template-columns:210px 1fr 1fr 1fr 130px;border-bottom:1px solid var(–bd);cursor:pointer;transition:background .15s;}
+.wm-row:hover{background:var(–bg3);}.wm-row:last-child{border-bottom:none;}
+.wm-team{padding:.8rem 1rem;border-right:1px solid var(–bd);display:flex;align-items:center;gap:.6rem;}
+.wm-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.wm-nm{font-weight:600;font-size:.84rem;}.wm-ow{font-size:.66rem;color:var(–dim);}
+.wm-cell{padding:.8rem 1rem;border-right:1px solid var(–bd);}
+.wm-cell:last-child{border-right:none;display:flex;align-items:center;justify-content:center;}
+.wm-bt{height:5px;background:var(–bg2);border-radius:3px;overflow:hidden;margin-bottom:3px;}
+.wm-bf{height:100%;border-radius:3px;}
+.wm-bv{font-family:‘Barlow Condensed’,sans-serif;font-size:.66rem;color:var(–mid);font-weight:600;}
+
+/* TEAM CARDS */
+.af{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.afb{padding:.28rem .75rem;border-radius:4px;border:1px solid var(–bd2);background:var(–bg3);font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;color:var(–mid);transition:all .15s;font-family:‘Barlow Condensed’,sans-serif;}
+.afb.active{background:var(–teal);color:var(–bg);border-color:var(–teal);}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(278px,1fr));gap:1rem;}
+.tc{background:var(–card);border:1px solid var(–bd2);border-top:3px solid transparent;border-radius:12px;padding:1.4rem;cursor:pointer;transition:box-shadow .2s,transform .15s,border-color .2s;}
+.tc:hover{box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(-2px);border-color:var(–bd3);}
+.tc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.85rem;}
+.tc-av{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:.92rem;color:var(–bg);flex-shrink:0;}
+.tc-nm{font-weight:600;font-size:.88rem;margin-bottom:1px;}
+.tc-ow{font-size:.66rem;color:var(–dim);}
+.tc-badges{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.85rem;}
+.tc-sr{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;}
+.tc-sc{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:2.4rem;line-height:1;}
+.tc-sm{display:flex;flex-direction:column;gap:2px;}
+.tc-sl{font-family:‘Barlow Condensed’,sans-serif;font-size:.58rem;color:var(–dim);text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
+.tc-hz{font-size:.74rem;font-weight:500;}
+.tc-tr{margin-left:auto;font-size:1.3rem;font-weight:700;}
+.tc-bars{display:flex;flex-direction:column;gap:5px;margin-bottom:.85rem;}
+.tc-br{display:flex;align-items:center;gap:.5rem;}
+.tc-bl{font-family:‘Barlow Condensed’,sans-serif;font-size:.62rem;font-weight:700;color:var(–dim);width:24px;text-align:right;flex-shrink:0;}
+.tc-bt{flex:1;height:4px;background:var(–bg2);border-radius:2px;overflow:hidden;}
+.tc-bf{height:100%;border-radius:2px;}
+.tc-bv{font-family:‘Barlow Condensed’,sans-serif;font-size:.62rem;color:var(–dim);width:22px;text-align:right;font-weight:600;}
+.tc-ft{display:flex;justify-content:space-between;align-items:center;padding-top:.82rem;border-top:1px solid var(–bd);}
+.tc-rec{font-family:‘Barlow Condensed’,sans-serif;font-size:.7rem;color:var(–mid);font-weight:600;}
+.tc-rec .w{color:var(–teal);}.tc-rec .l{color:var(–red);}
+.tc-activity{display:flex;align-items:center;gap:.35rem;font-family:‘Barlow Condensed’,sans-serif;font-size:.66rem;color:var(–dim);font-weight:600;}
+.act-dot{width:6px;height:6px;border-radius:50%;}
+
+/* DEEP DIVE */
+.dp{max-width:1060px;margin:0 auto;padding:2.5rem 2.5rem 5rem;}
+.dh{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:start;margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(–bd);}
+.dh-ey{font-family:‘Barlow Condensed’,sans-serif;font-size:.66rem;font-weight:700;color:var(–teal);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.5rem;}
+.dh-t{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:clamp(2rem,3.5vw,2.8rem);letter-spacing:.02em;text-transform:uppercase;line-height:1;margin-bottom:.5rem;}
+.dh-m{font-size:.78rem;color:var(–mid);font-weight:300;margin-bottom:.85rem;}
+.dh-badges{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.85rem;}
+.scp{background:linear-gradient(135deg,var(–bg3),var(–card));border:1px solid var(–bd2);border-radius:12px;padding:1.5rem;text-align:center;min-width:168px;}
+.scp-l{font-family:‘Barlow Condensed’,sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(–dim);margin-bottom:.4rem;}
+.scp-s{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:3.5rem;line-height:1;margin-bottom:.2rem;color:var(–teal);}
+.scp-a{font-family:‘Barlow Condensed’,sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(–mid);margin-bottom:.85rem;padding-bottom:.85rem;border-bottom:1px solid var(–bd);}
+.scp-sub{display:flex;justify-content:center;gap:1.25rem;}
+.scp-sv{font-family:‘Barlow Condensed’,sans-serif;font-weight:800;font-size:1rem;}
+.scp-sl{font-family:‘Barlow Condensed’,sans-serif;font-size:.55rem;color:var(–dim);text-transform:uppercase;letter-spacing:.1em;margin-top:1px;font-weight:600;}
+
+/* PICK CAPITAL */
+.pick-cap{display:flex;align-items:center;gap:.75rem;background:var(–teal-dim);border:1px solid rgba(6,214,160,.2);border-radius:8px;padding:.65rem 1rem;margin-top:.85rem;flex-wrap:wrap;}
+.pick-cap-lbl{font-family:‘Barlow Condensed’,sans-serif;font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(–teal);flex-shrink:0;}
+.ppill{display:inline-flex;align-items:center;padding:.18rem .55rem;border-radius:4px;font-family:‘Barlow Condensed’,sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.04em;}
+.ppill.r1{background:rgba(59,130,246,.2);color:#60a5fa;border:1px solid rgba(59,130,246,.3);}
+.ppill.r2{background:rgba(6,214,160,.15);color:var(–teal);border:1px solid rgba(6,214,160,.25);}
+.ppill.r3{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+
+/* MANAGER ACTIVITY PANEL */
+.act-panel{background:var(–card);border:1px solid var(–bd2);border-radius:12px;padding:1.25rem;margin-bottom:2rem;}
+.act-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(–bd);border-radius:8px;overflow:hidden;margin-bottom:1rem;}
+.act-stat{background:var(–bg3);padding:.75rem;text-align:center;}
+.act-val{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:1.6rem;line-height:1;color:var(–teal);}
+.act-lbl{font-family:‘Barlow Condensed’,sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(–dim);margin-top:2px;}
+.act-bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem;}
+.act-bar-lbl{font-family:‘Barlow Condensed’,sans-serif;font-size:.66rem;font-weight:600;color:var(–mid);width:70px;flex-shrink:0;}
+.act-bar-track{flex:1;height:5px;background:var(–bg2);border-radius:3px;overflow:hidden;}
+.act-bar-fill{height:100%;border-radius:3px;}
+.act-bar-val{font-family:‘Barlow Condensed’,sans-serif;font-size:.66rem;color:var(–dim);width:40px;text-align:right;font-weight:600;}
+.act-vs{font-size:.7rem;color:var(–dim);margin-top:.3rem;}
+
+/* HISTORY PANEL */
+.hist-panel{background:var(–card);border:1px solid var(–bd2);border-radius:12px;overflow:hidden;margin-bottom:2rem;}
+.hist-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;border-bottom:1px solid var(–bd);}
+.hist-row:last-child{border-bottom:none;}
+.hist-season{font-family:‘Barlow Condensed’,sans-serif;font-size:.72rem;font-weight:700;color:var(–dim);letter-spacing:.06em;}
+.hist-result{display:flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:500;}
+
+/* ROADMAP */
+.rmg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(–bd);border:1px solid var(–bd2);border-radius:12px;overflow:hidden;margin-bottom:3rem;}
+.ry{background:var(–card);padding:1.5rem;}
+.ry-yr{font-family:‘Barlow Condensed’,sans-serif;font-weight:700;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(–dim);margin-bottom:.4rem;}
+.ry-lbl{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:1.3rem;letter-spacing:.04em;text-transform:uppercase;line-height:1;margin-bottom:1rem;}
+.ry-sr{display:flex;align-items:center;gap:.6rem;margin-bottom:1.25rem;}
+.ry-sn{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:1.4rem;}
+.ry-st{flex:1;height:4px;background:var(–bg2);border-radius:2px;overflow:hidden;}
+.ry-sf{height:100%;border-radius:2px;}
+.ry-mvs{display:flex;flex-direction:column;gap:.4rem;}
+.ry-mv{display:flex;align-items:flex-start;gap:.5rem;font-size:.78rem;color:var(–mid);line-height:1.45;padding:.4rem .6rem;border-radius:6px;background:var(–bg3);}
+.ry-mi{flex-shrink:0;margin-top:1px;}
+.ry-mv strong{color:var(–tx);font-weight:600;}
+
+/* ROSTER */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:3rem;}
+.psec{background:var(–card);border:1px solid var(–bd2);border-radius:12px;overflow:hidden;}
+.psh{display:flex;align-items:center;justify-content:space-between;padding:.78rem 1.1rem;border-bottom:1px solid var(–bd);background:var(–bg3);}
+.pst{font-family:‘Barlow Condensed’,sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;}
+.psg{font-family:‘Barlow Condensed’,sans-serif;font-weight:900;font-size:1.1rem;}
+.pp{display:flex;align-items:center;gap:.65rem;padding:.58rem 1.1rem;border-bottom:1px solid var(–bd);transition:background .15s;}
+.pp:hover{background:var(–bg3);}.pp:last-child{border-bottom:none;}
+.pp-rk{font-family:‘Barlow Condensed’,sans-serif;font-size:.65rem;color:var(–dim);width:16px;text-align:center;flex-shrink:0;font-weight:600;}
+.pp-nm{flex:1;font-size:.82rem;font-weight:500;}
+.pp-ag{font-size:.66rem;margin-right:.3rem;font-family:‘Barlow Condensed’,sans-serif;font-weight:700;}
+.pp-ag.young{color:var(–teal);}.pp-ag.prime{color:#60a5fa;}.pp-ag.aging{color:var(–red);}
+.pp-cliff{font-size:.58rem;font-weight:700;padding:.07rem .32rem;border-radius:3px;font-family:‘Barlow Condensed’,sans-serif;letter-spacing:.04em;text-transform:uppercase;}
+.pp-vbar{display:flex;align-items:center;gap:.35rem;width:80px;flex-shrink:0;}
+.pp-vt{flex:1;height:4px;background:var(–bg2);border-radius:2px;overflow:hidden;}
+.pp-vf{height:100%;border-radius:2px;}
+.pp-vv{font-family:‘Barlow Condensed’,sans-serif;font-size:.64rem;color:var(–dim);width:28px;text-align:right;flex-shrink:0;font-weight:600;}
+
+/* TRADE BOARD */
+.tcard{background:var(–card);border:1px solid var(–bd2);border-radius:12px;margin-bottom:.85rem;overflow:hidden;}
+.tcard-hd{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(–bd);background:var(–bg3);}
+.tcard-title{font-family:‘Barlow Condensed’,sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.03em;}
+.turg{font-family:‘Barlow Condensed’,sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.18rem .55rem;border-radius:4px;}
+.turg.now{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.25);}
+.turg.soon{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.turg.offseason{background:rgba(6,214,160,.1);color:var(–teal);border:1px solid rgba(6,214,160,.2);}
+.tcard-body{display:grid;grid-template-columns:1fr 36px 1fr;gap:.75rem;align-items:start;padding:1.1rem 1.25rem;}
+.tside-lbl{font-family:‘Barlow Condensed’,sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(–dim);margin-bottom:.5rem;}
+.tassets{display:flex;flex-direction:column;gap:.28rem;}
+.tasset{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(–mid);background:var(–bg3);padding:.28rem .55rem;border-radius:5px;}
+.tasset .ptag{font-family:‘Barlow Condensed’,sans-serif;font-size:.6rem;font-weight:700;padding:.07rem .28rem;border-radius:3px;flex-shrink:0;letter-spacing:.04em;}
+.tasset .aval{font-family:‘Barlow Condensed’,sans-serif;font-size:.65rem;color:var(–dim);margin-left:auto;font-weight:600;}
+.tarrow{display:flex;align-items:center;justify-content:center;padding-top:1.4rem;font-size:1.1rem;color:var(–dim);}
+.tpc{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(–bd);}
+.tpro,.tcon{padding:.85rem 1.25rem;}
+.tpro{border-right:1px solid var(–bd);}
+.tpc-lbl{font-family:‘Barlow Condensed’,sans-serif;font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+.tpro .tpc-lbl{color:var(–teal);}.tcon .tpc-lbl{color:var(–red);}
+.tpc-item{font-size:.76rem;color:var(–mid);line-height:1.45;margin-bottom:.28rem;display:flex;align-items:flex-start;gap:.4rem;}
+.tpc-item:last-child{margin-bottom:0;}
+.tpc-item strong{color:var(–tx);font-weight:600;}
+.tval-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.25rem;border-top:1px solid var(–bd);background:var(–bg3);}
+.tval-item{font-family:‘Barlow Condensed’,sans-serif;font-size:.65rem;color:var(–dim);font-weight:600;letter-spacing:.04em;}
+.tfair{font-family:‘Barlow Condensed’,sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .5rem;border-radius:4px;}
+.tfair.fair{background:rgba(6,214,160,.12);color:var(–teal);border:1px solid rgba(6,214,160,.2);}
+.tfair.slight{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.18);}
+.tfair.premium{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2);}
+
+/* SC GRID */
+.scgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:3rem;}
+.scbox{background:var(–card);border:1px solid var(–bd2);border-radius:12px;padding:1.4rem;}
+.sct{font-family:‘Barlow Condensed’,sans-serif;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(–dim);margin-bottom:.85rem;}
+.sci{display:flex;align-items:flex-start;gap:.55rem;margin-bottom:.48rem;font-size:.78rem;color:var(–mid);line-height:1.5;}
+.sci:last-child{margin-bottom:0;}
+.scid{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+
+.fu{opacity:0;transform:translateY(14px);animation:fuA .45s ease forwards;}
+@keyframes fuA{to{opacity:1;transform:translateY(0);}}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}
+.d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}
+footer{border-top:1px solid var(–bd);padding:1.5rem 2.5rem;text-align:center;font-size:.66rem;color:var(–dim);font-family:‘Barlow Condensed’,sans-serif;letter-spacing:.08em;font-weight:600;text-transform:uppercase;}
+footer span{color:var(–teal);}
+
+@media(max-width:900px){
+.pgrid,.scgrid,.rmg,.tpc,.act-grid{grid-template-columns:1fr 1fr;}
+.dh{grid-template-columns:1fr;}.scp{display:none;}
+.wm-hd,.wm-row{grid-template-columns:160px 1fr 130px;}
+.wm-cell:nth-child(3),.wm-cell:nth-child(4),.wm-hc:nth-child(3),.wm-hc:nth-child(4){display:none;}
+.tcard-body{grid-template-columns:1fr;}.tarrow{display:none;}
+}
+@media(max-width:640px){
+.ln,.anav{padding:1rem 1.25rem;}.lfeats{flex-direction:column;gap:1rem;}
+.pg,.dp{padding:1.75rem 1.25rem 3rem;}
+.ph{flex-direction:column;align-items:flex-start;gap:1.5rem;}
+.tgrid{grid-template-columns:1fr;}
+.pgrid,.scgrid{grid-template-columns:1fr;}
+.act-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+
+</head>
+<body>
+
+<!-- LANDING -->
+
+<div id="sc-land" class="screen">
+  <div class="ln"><div><div class="logo">Dynasty <span>Compass</span></div><div class="logo-sub">Navigate your roster's future</div></div></div>
+  <div class="lb"><div class="li">
+    <div class="ley">Dynasty Roster Intelligence</div>
+    <h1 class="lh">Know Your<span>Window.</span></h1>
+    <p class="lsub">1–3 year roadmaps, trade suggestions, manager activity profiles, and league history — powered by live FantasyCalc values and Sleeper data.</p>
+    <div class="itabs">
+      <button class="itab active" onclick="switchTab('league',this)">League ID</button>
+      <button class="itab" onclick="switchTab('user',this)">Username</button>
+    </div>
+    <div class="ibox">
+      <div id="p-league" class="ip active">
+        <label class="ilbl">Sleeper League ID</label>
+        <input class="ifield" id="lid" type="text" placeholder="e.g. 1332473288575717376"/>
+        <div class="ihint">Sleeper → League Settings → scroll to bottom to find your ID.</div>
+      </div>
+      <div id="p-user" class="ip">
+        <label class="ilbl">Sleeper Username</label>
+        <input class="ifield" id="uname" type="text" placeholder="e.g. sleeperuser123"/>
+        <div class="ihint">We'll find your active dynasty leagues automatically.</div>
+        <label class="ilbl">Select League</label>
+        <select class="ifield" id="usel" style="cursor:pointer"><option value="">— enter username above —</option></select>
+      </div>
+      <button class="gobtn" onclick="goAnalyze()">Generate Roadmap →</button>
+    </div>
+    <div class="lfeats">
+      <div class="lf"><div class="lf-i">🏆</div><div class="lf-t">5 Archetypes</div><div class="lf-d">Win-Now · Contender · Rising · Rebuilding · Transitioning</div></div>
+      <div class="lf"><div class="lf-i">📜</div><div class="lf-t">League History</div><div class="lf-d">2 seasons of champion, runner-up, and last place badges</div></div>
+      <div class="lf"><div class="lf-i">⚡</div><div class="lf-t">Manager Activity</div><div class="lf-d">Trades, waiver activity, and engagement vs league average</div></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- LOADER -->
+
+<div id="sc-load" class="screen">
+  <div class="ld-logo">Dynasty <span>Compass</span></div>
+  <div class="ld-track"><div class="ld-fill"></div></div>
+  <div class="ld-txt" id="ldtxt">Connecting…</div>
+</div>
+
+<!-- OVERVIEW -->
+
+<div id="sc-ov" class="screen">
+  <nav class="anav">
+    <div class="logo" onclick="goHome()">Dynasty <span>Compass</span></div>
+    <div class="ndiv"></div><span class="ncrumb cur" id="nav-ov" onclick="show('sc-ov');document.getElementById('nav-ov').classList.add('cur');document.getElementById('nav-rb').classList.remove('cur')">League Overview</span><span style="color:var(--dim);margin:0 .5rem;font-size:.7rem">·</span><span class="ncrumb" id="nav-rb" onclick="showRookieBoard()">Rookie Board</span>
+    <div class="nsp"></div><div class="nlname" id="ov-ln">—</div>
+  </nav>
+  <div class="pg">
+    <div id="ov-draft-countdown" style="margin-bottom:1.5rem"></div>
+    <div class="ph fu d1">
+      <div>
+        <div class="ph-ey">Dynasty Compass · League Analysis</div>
+        <div class="ph-t" id="ov-t">League <span>Overview</span></div>
+        <div class="ph-m" id="ov-m">—</div>
+      </div>
+      <div class="phsts">
+        <div class="phst"><div class="phst-v" id="ov-wn">—</div><div class="phst-l">Win-Now</div></div>
+        <div class="phst"><div class="phst-v" id="ov-c">—</div><div class="phst-l">Contenders</div></div>
+        <div class="phst"><div class="phst-v" id="ov-r">—</div><div class="phst-l">Rising</div></div>
+        <div class="phst"><div class="phst-v" id="ov-b">—</div><div class="phst-l">Rebuilding</div></div>
+      </div>
+    </div>
+    <div class="fu d2" style="margin-bottom:3rem">
+      <div class="sl"><div class="sl-t">Contention Window Map</div><div class="sl-r"></div><div class="sl-n">Net picks vs league avg · Click to drill in</div></div>
+      <div class="wmap">
+        <div class="wm-hd"><div class="wm-hc">Team</div><div class="wm-hc">Year 1</div><div class="wm-hc">Year 2</div><div class="wm-hc">Year 3</div><div class="wm-hc">Archetype</div></div>
+        <div id="wmap-body"></div>
+      </div>
+    </div>
+    <div class="fu d3">
+      <div class="sl"><div class="sl-t">All Teams</div><div class="sl-r"></div><div class="sl-n">Click for roadmap + trade board</div></div>
+      <div class="af">
+        <button class="afb active" onclick="filterA('all',this)">All</button>
+        <button class="afb" onclick="filterA('winnow',this)">🔥 Win-Now</button>
+        <button class="afb" onclick="filterA('contender',this)">🏆 Contender</button>
+        <button class="afb" onclick="filterA('rising',this)">📈 Rising</button>
+        <button class="afb" onclick="filterA('rebuilding',this)">🔨 Rebuilding</button>
+        <button class="afb" onclick="filterA('transitioning',this)">⚖️ Transitioning</button>
+      </div>
+      <div class="tgrid" id="tgrid"></div>
+    </div>
+  </div>
+  <footer>Dynasty <span>Compass</span> · Values by FantasyCalc · Data by Sleeper</footer>
+</div>
+
+<!-- DIVE -->
+
+<div id="sc-dv" class="screen">
+  <nav class="anav">
+    <div class="logo" onclick="goHome()">Dynasty <span>Compass</span></div>
+    <div class="ndiv"></div>
+    <span class="ncrumb" onclick="show('sc-ov')">League Overview</span>
+    <span style="color:var(--dim);margin:0 .3rem;font-size:.8rem">›</span>
+    <span class="ncrumb cur" id="dv-crumb">Team</span>
+    <div class="nsp"></div>
+    <div class="nbk" onclick="show('sc-ov')">← Back</div>
+  </nav>
+  <div class="dp" id="dv-content"></div>
+  <footer>Dynasty <span>Compass</span> · Values by FantasyCalc</footer>
+</div>
+
+<script>
+const SLAPI='https://api.sleeper.app/v1';
+const FCAPI='https://api.fantasycalc.com/values/current';
+const COLORS=['#06d6a0','#3b82f6','#f97316','#a78bfa','#ef4444','#fbbf24','#10b981','#8b5cf6','#f43f5e','#0ea5e9','#84cc16','#e879f9'];
+const AD={
+  winnow:   {label:'Win-Now',      color:'var(--wn)', bg:'var(--wn-bg)', emoji:'🔥'},
+  contender:{label:'Contender',    color:'var(--co)', bg:'var(--co-bg)', emoji:'🏆'},
+  rising:   {label:'Rising',       color:'var(--ri)', bg:'var(--ri-bg)', emoji:'📈'},
+  rebuilding:{label:'Rebuilding',  color:'var(--re)', bg:'var(--re-bg)', emoji:'🔨'},
+  transitioning:{label:'Transitioning',color:'var(--tr)',bg:'var(--tr-bg)',emoji:'⚖️'},
+};
+const PC={QB:'#60a5fa',RB:'#06d6a0',WR:'#a78bfa',TE:'#fbbf24'};
+const CLIFF={QB:35,RB:27,WR:30,TE:29};
+const PRIME_LOW={QB:24,RB:22,WR:23,TE:24};
+const PICK_SLOT_VAL={1:8500,2:7800,3:7200,4:6700,5:6200,6:5800,7:5400,8:5000,9:4700,10:4400,11:4100,12:3800};
+const PICK_TIER_VAL={
+  1:{early:6200,mid:5200,late:4200},
+  2:{early:5500,mid:4500,late:3600},
+  3:{early:4500,mid:3800,late:3000},
+};
+const PVAL={1:4800,2:1600,3:500,4:80};
+const PYDISC={0:1.0,1:0.88,2:0.82,3:0.75};
+const FUTURE_YRS_FN=(curSeason)=>[String(curSeason+1),String(curSeason+2),String(curSeason+3)];
+const ROOKIE_EV={
+  1:{y1:1800,y2:6500,y3:7800},2:{y1:1400,y2:5800,y3:7000},
+  3:{y1:1100,y2:5200,y3:6400},4:{y1:900,y2:4700,y3:5800},
+  5:{y1:750,y2:4200,y3:5300},6:{y1:620,y2:3800,y3:4800},
+  7:{y1:510,y2:3400,y3:4400},8:{y1:420,y2:3000,y3:4000},
+  9:{y1:360,y2:2700,y3:3600},10:{y1:300,y2:2400,y3:3200},
+  11:{y1:260,y2:2100,y3:2900},12:{y1:220,y2:1900,y3:2600},
+  r2:{y1:100,y2:1200,y3:1800},r3:{y1:50,y2:600,y3:900},
+};
+function rookieEV(pick,yr){
+  const k=pick.round===1?Math.min(pick.slot||7,12):pick.round===2?'r2':'r3';
+  const ev=ROOKIE_EV[k]||ROOKIE_EV[7];
+  return yr===0?ev.y1:yr===1?ev.y2:ev.y3;
+}
+let S={
+  lid:'',name:'',meta:'',curSeason:2026,teams:[],fcMap:{},pdb:{},
+  leagueAvgPicks:{r1:3,r2:3,r3:3},
+  pickDetails:{},
+  historyMap:{},
+  activityMap:{},
+  leagueAvgActivity:{trades:0,waivers:0},
+  leagueDraftStartTime:0,
+  _currentDiveTeam:null,
+  cachedTxns:null,
+};
+let RB={year:2026,pos:'ALL',players:[],loaded:{2026:false}};
+const $=id=>document.getElementById(id);
+const col=i=>COLORS[i%COLORS.length];
+const ini=n=>{if(!n)return'??';const p=n.trim().split(/\s+/);return p.length>=2?(p[0][0]+p[p.length-1][0]).toUpperCase():n.slice(0,2).toUpperCase();};
+const setL=m=>{$('ldtxt').textContent=m;};
+async function get(u){const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){show('sc-land');}
+function normPos(p){if(p==='QB')return'QB';if(p==='RB')return'RB';if(p==='WR')return'WR';if(p==='TE')return'TE';return null;}
+
+// Age resolution: Sleeper primary, birth_date fallback, FC tertiary
+function resolveAge(sid,fcAge){
+  const sp=S.pdb[sid];
+  if(sp?.age&&sp.age>15&&sp.age<50)return sp.age;
+  if(sp?.birth_date){
+    const bd=new Date(sp.birth_date);
+    if(!isNaN(bd)){let a=new Date().getFullYear()-bd.getFullYear();const m=new Date().getMonth()-bd.getMonth();if(m<0||(m===0&&new Date().getDate()<bd.getDate()))a--;if(a>15&&a<50)return a;}
+  }
+  if(fcAge&&fcAge>15&&fcAge<50)return Math.round(fcAge);
+  return null;
+}
+
+// Cliff status — elite player override (top 12 = never declining, top 24 = no past cliff)
+function cliffStatus(pos,age,posRank){
+  const cliff=CLIFF[pos]||30,prime=PRIME_LOW[pos]||23;
+  if(!age)return{label:'Unknown',cls:'',color:'var(--dim)',bg:'rgba(255,255,255,.04)'};
+  const elite=posRank&&posRank<=12,vgood=posRank&&posRank<=24;
+  if(age>=cliff+2&&!vgood)return{label:'Past Cliff',cls:'aging',color:'#ef4444',bg:'rgba(239,68,68,.12)'};
+  if(age>=cliff&&!elite)return{label:'Declining',cls:'aging',color:'#f97316',bg:'rgba(249,115,22,.1)'};
+  if(age>=cliff-2&&!elite)return{label:'Late Prime',cls:'prime',color:'#fbbf24',bg:'rgba(251,191,36,.1)'};
+  if(age<=prime+1)return{label:'Rising',cls:'young',color:'var(--teal)',bg:'rgba(6,214,160,.1)'};
+  return{label:'Prime',cls:'prime',color:'#60a5fa',bg:'rgba(59,130,246,.1)'};
+}
+
+// Value projection — pre-prime appreciates
+function projectVal(val,pos,age,yr){
+  if(!yr)return val;
+  if(!age)return val*Math.pow(0.96,yr);
+  const cliff=CLIFF[pos]||30,prime=PRIME_LOW[pos]||23,projAge=age+yr;
+  if(projAge<prime)return val*Math.pow(1.04,yr);       // pre-prime: appreciating
+  if(projAge<=prime+2)return val*Math.pow(0.99,yr);    // early prime: very stable
+  if(projAge<=cliff-2)return val*Math.pow(0.96,yr);    // mid prime: gentle decay
+  if(projAge<=cliff)return val*Math.pow(0.91,yr);      // approaching cliff
+  const ypc=projAge-cliff;
+  if(ypc<=1)return val*Math.pow(0.91,Math.min(yr,cliff-age))*Math.pow(0.85,Math.min(ypc,yr));
+  if(ypc<=3)return val*Math.pow(0.91,Math.min(yr,cliff-age))*Math.pow(0.78,Math.min(ypc,yr));
+  return val*Math.pow(0.91,Math.min(yr,cliff-age))*Math.pow(0.65,Math.min(ypc,yr));
+}
+
+function rookiePickContrib(rosterId,targetYr){
+  // 1st round picks: modeled as projected player additions (slot-calibrated)
+  // 2nd/3rd round picks: modest capital contribution
+  const myPicks=S.pickDetails[rosterId]||[];
+  const curSeason=S.curSeason;
+  const displayYrs=[String(curSeason),String(curSeason+1),String(curSeason+2)];
+  let total=0;
+  myPicks.forEach(pick=>{
+    const pyo=displayYrs.indexOf(String(pick.season));
+    if(pyo<0)return;
+    const vyo=targetYr-1-pyo;
+    if(vyo<0)return;
+    if(pick.round===1){
+      total+=rookieEV(pick,vyo);
+    } else {
+      const rf=pick.round===2?0.35:0.12;
+      const base=PICK_TIER_VAL[Math.min(pyo+1,3)].mid;
+      total+=Math.round(base*rf*(vyo===0?0.4:vyo===1?0.7:1.0));
+    }
+  });
+  return Math.min(total,25000);
+}
+
+
+function gradeRoster(players,caps,isSF,rosterId){
+  const byPos={QB:[],RB:[],WR:[],TE:[]};
+  players.forEach(pid=>{
+    const fc=S.fcMap[pid];if(!fc)return;
+    const pos=normPos(fc.pos);if(!pos)return;
+    const age=resolveAge(pid,fc.fcAge);
+    byPos[pos].push({id:pid,name:fc.name||'Unknown',age,pos,val:fc.value||0,trend:fc.trend||0,posRank:fc.posRank});
+  });
+  Object.keys(byPos).forEach(pos=>byPos[pos].sort((a,b)=>b.val-a.val));
+
+  const sumPos=(pos,yr)=>{const g=byPos[pos]||[];const lim=pos==='QB'?3:pos==='TE'?3:8;return g.slice(0,lim).reduce((s,p)=>s+projectVal(p.val,pos,p.age,yr),0);};
+
+  const r0=sumPos('QB',0)+sumPos('RB',0)+sumPos('WR',0)+sumPos('TE',0);
+  const r2=sumPos('QB',1)+sumPos('RB',1)+sumPos('WR',1)+sumPos('TE',1)+rookiePickContrib(rosterId,2);
+  const r3=sumPos('QB',2)+sumPos('RB',2)+sumPos('WR',2)+sumPos('TE',2)+rookiePickContrib(rosterId,3);
+
+  // Store raw totals for absolute trajectory
+  const rawY1=r0,rawY2=r2,rawY3=r3;
+  const MAX=68000;
+  const norm=v=>Math.min(100,Math.max(0,Math.round(v/MAX*100)));
+  const y1=norm(r0),y2=norm(r2),y3=norm(r3);
+
+  const posMax={QB:isSF?18000:8500,RB:15000,WR:17000,TE:7500};
+  const posScores={
+    QB:Math.min(100,Math.round(sumPos('QB',0)/posMax.QB*100)),
+    RB:Math.min(100,Math.round(sumPos('RB',0)/posMax.RB*100)),
+    WR:Math.min(100,Math.round(sumPos('WR',0)/posMax.WR*100)),
+    TE:Math.min(100,Math.round(sumPos('TE',0)/posMax.TE*100)),
+  };
+
+  const skill=[...byPos.QB,...byPos.RB,...byPos.WR,...byPos.TE].filter(p=>p.age);
+  const avgAge=skill.length?(skill.reduce((s,p)=>s+p.age,0)/skill.length).toFixed(1):'—';
+
+  // Temp surplus/needs — recalculated after league-relative rescaling
+  const surplus=Object.entries(posScores).filter(([p,s])=>s>=68).map(([p])=>p);
+  const needs=Object.entries(posScores).filter(([p,s])=>s<45).map(([p])=>p);
+
+  const cliffAssets=[];
+  Object.entries(byPos).forEach(([pos,ps])=>{
+    ps.forEach(p=>{
+      const cs=cliffStatus(pos,p.age,p.posRank);
+      if((cs.label==='Declining'||cs.label==='Past Cliff'||cs.label==='Late Prime')&&p.val>1500)
+        cliffAssets.push({...p,cliffLabel:cs.label});
+    });
+  });
+  cliffAssets.sort((a,b)=>b.val-a.val);
+
+  const youngCore=[];
+  Object.entries(byPos).forEach(([pos,ps])=>{
+    ps.forEach(p=>{if(p.age&&p.age<=(PRIME_LOW[pos]+2)&&p.val>2000)youngCore.push({...p});});
+  });
+  youngCore.sort((a,b)=>b.val-a.val);
+
+  const r1Count=caps.r1||0;
+  const isCapitalRich=r1Count>=3&&needs.length>=1;
+  const pickCapScore=(S.pickDetails[rosterId]||[]).reduce((s,p)=>s+(p.val||0),0);
+
+  return{score:y1,y1,y2,y3,rawY1,rawY2,rawY3,posScores,byPos,avgAge,surplus,needs,cliffAssets,youngCore,totalPlayers:players.length,r1Count,isCapitalRich,pickCapScore};
+}
+
+function assignArchetypes(teams,isSF){
+  // Pure percentile-based — works for any league size and composition.
+  const n=teams.length;
+  if(!n)return teams;
+  const byScore=[...teams].sort((a,b)=>b.score-a.score);
+
+  const top25idx=Math.ceil(n*0.25);
+  const top50idx=Math.ceil(n*0.50);
+  const bot25idx=Math.floor(n*0.75);
+
+  byScore.forEach((t,i)=>{
+    const isTop25=i<top25idx;
+    const isTop50=i<top50idx;
+    const isBot25=i>=bot25idx;
+    const avgAge=parseFloat(t.avgAge)||0;
+    // rawDrop: fraction of rawY1 lost by Y3 (0.15 = 15% decline)
+    const rawDrop=t.rawY1>0?(t.rawY1-t.rawY3)/t.rawY1:0;
+
+    // WIN-NOW: top half, aging core or declining trajectory, not capital-rich
+    // isCapitalRich only blocks if they genuinely have 3+ 1sts AND multiple needs
+    const isWinNow=isTop50&&(avgAge>=27.5||rawDrop>=0.15)&&!t.isCapitalRich;
+    // CAPITAL TRANSITIONING: has 3+ future 1sts, a positional hole, not top 25%
+    const isCapTrans=t.isCapitalRich&&!isTop25&&!isBot25;
+    // AGING TRANSITIONING: top half, softening trajectory but not win-now
+    const isAgingTrans=isTop50&&rawDrop>=0.08&&!isWinNow&&!isTop25;
+
+    if(isWinNow)t.arch='winnow';
+    else if(isCapTrans){t.arch='transitioning';t.transType='capital';}
+    else if(isAgingTrans){t.arch='transitioning';t.transType='aging';}
+    else if(isTop25)t.arch='contender';
+    else if(!isBot25&&t.rawY3>t.rawY1*1.03)t.arch='rising';
+    else if(isBot25)t.arch='rebuilding';
+    else t.arch='rebuilding';
+  });
+
+  // ── GUARANTEE BLOCK — all 5 archetypes must appear in leagues >= 8 teams ──
+  if(n>=8){
+    const cnt={winnow:0,contender:0,rising:0,rebuilding:0,transitioning:0};
+    byScore.forEach(t=>cnt[t.arch]++);
+
+    // Win-Now: force the oldest top-50% team regardless of age threshold
+    if(cnt.winnow===0){
+      const pool=byScore.slice(0,top50idx).filter(t=>t.arch==='contender'||t.arch==='transitioning');
+      const pick=pool.sort((a,b)=>parseFloat(b.avgAge||0)-parseFloat(a.avgAge||0))[0];
+      if(pick){const was=pick.arch;pick.arch='winnow';cnt.winnow++;cnt[was]=Math.max(0,cnt[was]-1);}
+    }
+
+    // Transitioning: force from contenders with the sharpest decline
+    if(cnt.transitioning===0){
+      const pool=byScore.filter(t=>t.arch==='contender')
+        .sort((a,b)=>(b.rawY1-b.rawY3)-(a.rawY1-a.rawY3));
+      if(pool[0]){pool[0].arch='transitioning';pool[0].transType='aging';cnt.transitioning++;cnt.contender--;}
+    }
+
+    // Rising: promote the most trajectory-positive rebuilder
+    if(cnt.rising===0){
+      const pool=byScore.filter(t=>t.arch==='rebuilding')
+        .sort((a,b)=>(b.rawY3-b.rawY1)-(a.rawY3-a.rawY1));
+      if(pool[0]){pool[0].arch='rising';cnt.rising++;cnt.rebuilding--;}
+    }
+
+    // Rebuilding: if everyone got promoted to rising, force the lowest-scored rising team back
+    if(cnt.rebuilding===0){
+      const pool=[...byScore].reverse().filter(t=>t.arch==='rising');
+      if(pool[0]){pool[0].arch='rebuilding';cnt.rebuilding++;cnt.rising--;}
+    }
+
+    // Contender: if we over-converted, force the highest non-contender top-25% team
+    if(cnt.contender===0){
+      const pool=byScore.slice(0,top25idx).filter(t=>t.arch!=='contender');
+      if(pool[0]){const was=pool[0].arch;pool[0].arch='contender';cnt.contender++;cnt[was]=Math.max(0,cnt[was]-1);}
+    }
+  }
+  return teams;
+}
+
+async function fetchHistory(league){
+  const curSeason=parseInt(league.season)||2026;
+  S.curSeason=curSeason;
+  const seasons=[curSeason-1,curSeason-2];
+  let prevLid=league.previous_league_id;
+
+  for(let si=0;si<seasons.length;si++){
+    if(!prevLid)break;
+    const season=seasons[si];
+    try{
+      const [prevLeague,bracket,loserBracket]=await Promise.all([
+        get(`${SLAPI}/league/${prevLid}`),
+        get(`${SLAPI}/league/${prevLid}/winners_bracket`),
+        get(`${SLAPI}/league/${prevLid}/losers_bracket`).catch(()=>[]),
+      ]);
+
+      if(bracket&&bracket.length){
+        // Championship match = highest round number in winners bracket
+        // Multiple matches may share the highest round (e.g. 3rd place game)
+        // The true championship is the one whose winner has no further match (p===1 in Sleeper = championship slot)
+        const maxRound=Math.max(...bracket.map(m=>m.r||0));
+        const finalRoundMatches=bracket.filter(m=>m.r===maxRound);
+        // Sleeper marks the championship match with p=1 (first place match)
+        // If p not set, pick the match where winner slot feeds into no other match
+        const champMatch=finalRoundMatches.find(m=>m.p===1)
+          ||finalRoundMatches.find(m=>!bracket.some(m2=>m2.t1_from?.w===m.m||m2.t2_from?.w===m.m))
+          ||finalRoundMatches[0];
+
+        if(champMatch){
+          const champRosterId=champMatch.w;
+          const runnerRosterId=champMatch.l;
+          if(champRosterId){
+            if(!S.historyMap[champRosterId])S.historyMap[champRosterId]=[];
+            S.historyMap[champRosterId].push({season,result:'champ'});
+          }
+          if(runnerRosterId){
+            if(!S.historyMap[runnerRosterId])S.historyMap[runnerRosterId]=[];
+            S.historyMap[runnerRosterId].push({season,result:'runner'});
+          }
+        }
+
+        // Playoff teams = only teams in round 1 of winners bracket (genuine qualifiers)
+        // This excludes consolation/3rd place participants who didn't win their division
+        const minRound=Math.min(...bracket.map(m=>m.r||999));
+        const r1Rosters=new Set(
+          bracket.filter(m=>m.r===minRound).flatMap(m=>[m.t1,m.t2]).filter(Boolean)
+        );
+        const champRid=champMatch?.w,runnerRid=champMatch?.l;
+        r1Rosters.forEach(rid=>{
+          if(rid===champRid||rid===runnerRid)return;
+          if(!S.historyMap[rid])S.historyMap[rid]=[];
+          if(!S.historyMap[rid].find(h=>h.season===season))
+            S.historyMap[rid].push({season,result:'playoffs'});
+        });
+      }
+
+      // Last place = loser of the final match in the losers bracket (toilet bowl)
+      if(loserBracket&&loserBracket.length){
+        const maxLR=Math.max(...loserBracket.map(m=>m.r||0));
+        const loserFinals=loserBracket.filter(m=>m.r===maxLR);
+        // Last place is the loser (l) of the toilet bowl final
+        // If multiple matches at max round, find the one for last place (p = highest number or lowest seed)
+        const lastMatch=loserFinals.find(m=>m.p===loserFinals.length)||loserFinals[loserFinals.length-1];
+        const lastRosterId=lastMatch?.l;
+        if(lastRosterId){
+          if(!S.historyMap[lastRosterId])S.historyMap[lastRosterId]=[];
+          if(!S.historyMap[lastRosterId].find(h=>h.season===season))
+            S.historyMap[lastRosterId].push({season,result:'last'});
+        }
+      }
+
+      prevLid=prevLeague.previous_league_id;
+    }catch(e){console.warn('History fetch failed for season',season,e);break;}
+  }
+}
+
+// ── ACTIVITY ──
+async function fetchActivity(rosters,league){
+  const trades={},waivers={};
+  rosters.forEach(r=>{trades[r.roster_id]=0;waivers[r.roster_id]=0;});
+
+  // Use owner_id (stable Sleeper user ID) to map transactions to current rosters
+  const uidToRid={};
+  rosters.forEach(r=>{if(r.owner_id)uidToRid[r.owner_id]=r.roster_id;});
+
+  function countTxns(txns){
+    if(!Array.isArray(txns))return;
+    txns.forEach(txn=>{
+      if(txn.type==='trade'){
+        // consenter_ids on Sleeper trades are roster IDs, not user IDs
+        (txn.consenter_ids||[]).forEach(rid=>{
+          if(trades[rid]!=null)trades[rid]=(trades[rid]||0)+1;
+        });
+      }
+      if(txn.type==='waiver'||txn.type==='free_agent'){
+        const rid=uidToRid[txn.creator];
+        if(rid!=null)waivers[rid]=(waivers[rid]||0)+1;
+      }
+    });
+  }
+
+  // Sleeper transactions endpoint: /league/{lid}/transactions/{round}
+  // Round 0 = preseason/offseason moves (trades before season starts)
+  // Rounds 1-18 = in-season weekly transactions
+  // Fetch all rounds so we catch both preseason trades and in-season activity.
+  const rounds=[0,...Array.from({length:18},(_,i)=>i+1)];
+  await Promise.all(rounds.map(round=>
+    get(`${SLAPI}/league/${S.lid}/transactions/${round}`)
+      .then(countTxns).catch(()=>{})
+  ));
+
+  const n=rosters.length||1;
+  S.activityMap={};
+  rosters.forEach(r=>{S.activityMap[r.roster_id]={trades:trades[r.roster_id]||0,waivers:waivers[r.roster_id]||0};});
+  S.leagueAvgActivity={
+    trades:Object.values(trades).reduce((s,v)=>s+v,0)/n,
+    waivers:Object.values(waivers).reduce((s,v)=>s+v,0)/n,
+  };
+}
+
+
+// ── INPUT WIRING ──
+document.addEventListener('DOMContentLoaded',()=>{
+  const unameEl=document.getElementById('uname');
+  const uselEl=document.getElementById('usel');
+  if(unameEl)unameEl.addEventListener('blur',async function(){
+    const un=this.value.trim();if(!un)return;
+    try{
+      const u=await get(`${SLAPI}/user/${un}`);
+      if(!u?.user_id)return;
+      const ls=await get(`${SLAPI}/user/${u.user_id}/leagues/nfl/2025`);
+      if(uselEl)uselEl.innerHTML='<option value="">— select —</option>'+(ls||[]).map(l=>`<option value="${l.league_id}">${l.name}</option>`).join('');
+    }catch(e){}
+  });
+});
+
+async function goAnalyze(){
+  let lid='';
+  const activePanel=document.querySelector('.ip.active');
+  if(activePanel?.id==='p-league'){
+    lid=document.getElementById('lid')?.value?.trim()||'';
+  } else {
+    lid=document.getElementById('usel')?.value?.trim()||'';
+  }
+  if(!lid){alert('Please enter a League ID or select a league.');return;}
+  S.lid=lid;
+  show('sc-load');
+  await loadAll();
+}
+
+async function loadAll(){
+  try{
+    setL('Fetching league…');
+    const[league,rosters,users]=await Promise.all([
+      get(`${SLAPI}/league/${S.lid}`),
+      get(`${SLAPI}/league/${S.lid}/rosters`),
+      get(`${SLAPI}/league/${S.lid}/users`)
+    ]);
+    const isSF=(league.roster_positions||[]).some(p=>p==='SUPER_FLEX'||p==='WRTQ');
+    const ss=league.scoring_settings||{};
+    const rec=ss.rec!==undefined?ss.rec:1;
+    const ppr=rec===0?0:rec<=0.5?0.5:1;
+    S.curSeason=parseInt(league.season)||2026;
+
+    setL('Loading player database…');
+    try{S.pdb=await get(`${SLAPI}/players/nfl`);}catch(e){S.pdb={};}
+
+    setL('Fetching FantasyCalc values…');
+    const nQbs=isSF?2:1;
+    const fcUrl=`https://api.fantasycalc.com/values/current?isDynasty=true&numQbs=${nQbs}&numTeams=${rosters.length}&ppr=${ppr}`;
+    const fcRaw=await get(fcUrl);
+    S.fcMap={};
+    (fcRaw||[]).forEach(item=>{
+      const sid=item.player?.sleeperId;
+      if(!sid)return;
+      S.fcMap[sid]={
+        value:item.value||0,
+        name:item.player?.name||'',
+        pos:item.player?.position||'',
+        fcAge:item.player?.maybeAge||null,
+        posRank:item.positionRank||null,
+        trend:item.trend30Day||0,
+        maybeYoe:item.player?.maybeYoe,
+      };
+    });
+
+    setL('Fetching league history…');
+    S.historyMap={};
+    try{await fetchHistory(league);}catch(e){console.warn('History fetch error',e);}
+
+    setL('Computing pick capital…');
+    const curSeasonStr=String(S.curSeason);
+    const displayYrs=[curSeasonStr,String(S.curSeason+1),String(S.curSeason+2)];
+    let traded=[];
+    try{traded=await get(`${SLAPI}/league/${S.lid}/traded_picks`);}catch(e){}
+
+    const pickCaps={};
+    rosters.forEach(r=>{pickCaps[r.roster_id]={r1:0,r2:0,r3:0,r4:0};});
+    rosters.forEach(r=>{
+      displayYrs.forEach(()=>{for(let rnd=1;rnd<=4;rnd++)pickCaps[r.roster_id][`r${rnd}`]++;});
+    });
+    (traded||[]).forEach(p=>{
+      if(!displayYrs.includes(String(p.season)))return;
+      const k=`r${Math.min(p.round||1,4)}`;
+      if(pickCaps[p.roster_id])pickCaps[p.roster_id][k]=Math.max(0,pickCaps[p.roster_id][k]-1);
+      if(pickCaps[p.owner_id]&&p.owner_id!==p.roster_id)pickCaps[p.owner_id][k]++;
+    });
+    const n=rosters.length||1;
+    S.leagueAvgPicks={
+      r1:Object.values(pickCaps).reduce((s,c)=>s+(c.r1||0),0)/n,
+      r2:Object.values(pickCaps).reduce((s,c)=>s+(c.r2||0),0)/n,
+      r3:Object.values(pickCaps).reduce((s,c)=>s+(c.r3||0),0)/n,
+    };
+
+    setL('Fetching draft board…');
+    S.pickDetails={};
+    rosters.forEach(r=>{S.pickDetails[r.roster_id]=[];});
+    let slotByOrigOwner={};
+    S.leagueDraftStartTime=0;
+    try{
+      const allDrafts=await get(`${SLAPI}/league/${S.lid}/drafts`);
+      const curDrafts=(allDrafts||[]).filter(d=>String(d.season)===curSeasonStr);
+      const rookieDraft=curDrafts.sort((a,b)=>(b.created||0)-(a.created||0))
+        .find(d=>(d.settings?.rounds||15)<=6)||curDrafts[0];
+      if(rookieDraft?.start_time>0)S.leagueDraftStartTime=rookieDraft.start_time;
+      if(rookieDraft?.draft_id){
+        const draftObj=await get(`${SLAPI}/draft/${rookieDraft.draft_id}`);
+        if(draftObj.start_time>0)S.leagueDraftStartTime=draftObj.start_time;
+        Object.entries(draftObj.slot_to_roster_id||{}).forEach(([slot,origRid])=>{
+          slotByOrigOwner[String(origRid)]=parseInt(slot);
+        });
+      }
+    }catch(e){console.warn('Draft fetch failed',e);}
+
+    const nTeams=rosters.length||12;
+    const umap2={};users.forEach(u=>{umap2[u.user_id]=u;});
+    const rosterOwnerName={};
+    rosters.forEach(r=>{
+      const u=umap2[r.owner_id]||{};
+      rosterOwnerName[r.roster_id]=u.display_name||u.username||`Team ${r.roster_id}`;
+    });
+    const rostersByWins=[...rosters].sort((a,b)=>(a.settings?.wins||0)-(b.settings?.wins||0));
+    const rosterRank={};rostersByWins.forEach((r,i)=>{rosterRank[r.roster_id]=i+1;});
+
+    displayYrs.forEach((yr,yIdx)=>{
+      const disc=[0.95,0.88,0.82][yIdx];
+      const isNow=yr===curSeasonStr;
+      const tierVals=PICK_TIER_VAL[Math.min(yIdx+1,3)];
+      rosters.forEach(r=>{
+        const rid=r.roster_id;
+        const r1count=pickCaps[rid]?.r1||0;
+        if(r1count>0){
+          if(isNow&&Object.keys(slotByOrigOwner).length>0){
+            const mySlots=Object.entries(slotByOrigOwner)
+              .filter(([,holder])=>String(holder)===String(rid))
+              .map(([slot])=>parseInt(slot)).sort((a,b)=>a-b);
+            mySlots.forEach(slot=>{
+              const base=PICK_SLOT_VAL[slot]||3800;
+              S.pickDetails[rid].push({season:yr,round:1,slot,
+                label:`${yr} 1.${String(slot).padStart(2,'0')}`,
+                val:Math.round(base*disc),tier:slot<=Math.floor(nTeams*0.33)?'early':slot<=Math.ceil(nTeams*0.67)?'mid':'late'});
+            });
+            for(let i=mySlots.length;i<r1count;i++){
+              const ps=Math.ceil(nTeams/2);
+              S.pickDetails[rid].push({season:yr,round:1,slot:ps,
+                label:`${yr} 1.${String(ps).padStart(2,'0')} (proj)`,
+                val:Math.round((PICK_SLOT_VAL[ps]||5000)*disc),tier:'mid'});
+            }
+          } else {
+            for(let i=0;i<r1count;i++){
+              const tradedMatch=(traded||[]).filter(p=>String(p.season)===yr&&p.round===1&&String(p.owner_id)===String(rid))[i];
+              const origOwner=tradedMatch?.roster_id||rid;
+              const origName=tradedMatch?rosterOwnerName[origOwner]:null;
+              const rank=rosterRank[origOwner]||Math.ceil(nTeams/2);
+              const tier=rank<=Math.floor(nTeams*0.33)?'early':rank<=Math.ceil(nTeams*0.67)?'mid':'late';
+              const ownerTag=origName&&origName!==rosterOwnerName[rid]?` (${origName})`:'';
+              S.pickDetails[rid].push({season:yr,round:1,slot:rank,
+                label:`${yr} ${tier.charAt(0).toUpperCase()+tier.slice(1)} 1st${ownerTag}`,
+                val:tierVals[tier],tier,origOwner});
+            }
+          }
+        }
+        for(let rnd=2;rnd<=3;rnd++){
+          const count=pickCaps[rid]?.[`r${rnd}`]||0;
+          const val=Math.round(tierVals.mid*(rnd===2?0.35:0.12));
+          const tradedR=(traded||[]).filter(p=>String(p.season)===yr&&p.round===rnd&&String(p.owner_id)===String(rid)&&String(p.roster_id)!==String(rid));
+          for(let i=0;i<count;i++){
+            const tm=tradedR[i];
+            const origName=tm?rosterOwnerName[tm.roster_id]:null;
+            S.pickDetails[rid].push({season:yr,round:rnd,slot:null,
+              label:`${yr} ${rnd===2?'2nd':'3rd'} Rd${origName?` (${origName})`:''}`,
+              val,tier:'mid'});
+          }
+        }
+      });
+    });
+
+    setL('Fetching activity data…');
+    try{await fetchActivity(rosters,league);}catch(e){console.warn('Activity fetch error',e);}
+
+    const umap={};users.forEach(u=>{umap[u.user_id]=u;});
+    S.name=league.name||'Dynasty League';
+    const fmtLabel=isSF?'Superflex':ppr===1?'Full PPR':ppr===0.5?'Half PPR':'Standard';
+    S.meta=`${S.curSeason} · Dynasty · ${fmtLabel} · ${rosters.length} Teams`;
+
+    setL('Grading rosters…');
+    const raw=rosters.map((r,i)=>{
+      const u=umap[r.owner_id]||{};
+      const teamName=u.metadata?.team_name||u.display_name||`Team ${r.roster_id}`;
+      const owner=u.display_name||u.username||'—';
+      const caps=pickCaps[r.roster_id]||{r1:0,r2:0,r3:0,r4:0};
+      const g=gradeRoster(r.players||[],caps,isSF,r.roster_id);
+      const act=S.activityMap[r.roster_id]||{trades:0,waivers:0};
+      const hist=(S.historyMap[r.roster_id]||[]).sort((a,b)=>b.season-a.season);
+      return{rosterId:r.roster_id,ownerId:r.owner_id,teamName,owner,
+        wins:r.settings?.wins||0,losses:r.settings?.losses||0,
+        color:col(i),pickCaps:caps,activity:act,history:hist,isSF,...g};
+    });
+
+    // Initial archetype pass (pre-rescale)
+    S.teams=assignArchetypes(raw,isSF);
+    S.teams.sort((a,b)=>b.score-a.score);
+
+    // ── POST-GRADING RESCALING ──
+    // Step 1: Positional grades — league-relative 5-95
+    ['QB','RB','WR','TE'].forEach(pos=>{
+      const sorted=S.teams.map(t=>({rosterId:t.rosterId,raw:t.posScores[pos]||0})).sort((a,b)=>b.raw-a.raw);
+      const maxR=sorted[0]?.raw||1,minR=sorted[sorted.length-1]?.raw||0,range=Math.max(maxR-minR,1);
+      sorted.forEach((s,i)=>{
+        const team=S.teams.find(t=>t.rosterId===s.rosterId);if(!team)return;
+        team.posScores[pos]=Math.round(5+((s.raw-minR)/range)*90);
+        if(!team.posPercentile)team.posPercentile={};
+        team.posPercentile[pos]=i/sorted.length;
+      });
+    });
+
+    // Step 2: Y1 league-relative (25–88 range), Y2/Y3 fixed absolute scale
+    // Y1: best team ~88, worst ~25 — wider range gives more psychological differentiation
+    const rawY1s=S.teams.map(t=>t.rawY1||0).sort((a,b)=>b-a);
+    const maxRY1=rawY1s[0]||1,minRY1=rawY1s[rawY1s.length-1]||0,rRng=Math.max(maxRY1-minRY1,1);
+    // Y2/Y3 fixed scale: every 500 FC raw change = 1 score point, regardless of league spread
+    // 500 FC ≈ a solid WR3/RB3 in dynasty — a meaningful but not massive roster change
+    const FC_PER_PT=500;
+    S.teams.forEach(t=>{
+      t.y1=Math.round(25+((t.rawY1-minRY1)/rRng)*63);
+      t.score=t.y1;
+      const deltaY2=Math.round((t.rawY2-t.rawY1)/FC_PER_PT);
+      const deltaY3=Math.round((t.rawY3-t.rawY1)/FC_PER_PT);
+      t.y2=Math.round(Math.max(5,Math.min(99,t.y1+deltaY2)));
+      t.y3=Math.round(Math.max(5,Math.min(99,t.y1+deltaY3)));
+      // Trajectory based on raw FC change relative to roster size
+      const pct=t.rawY1>0?(t.rawY3-t.rawY1)/t.rawY1:0;
+      t.traj=pct>0.10?'rising':pct>0.02?'slight_up':pct<-0.10?'declining':pct<-0.02?'slight_down':'flat';
+    });
+    S.teams.sort((a,b)=>b.score-a.score);
+
+    // Step 3: Pick capital grade
+    const pickScores=S.teams.map(t=>({rosterId:t.rosterId,score:t.pickCapScore||0})).sort((a,b)=>b.score-a.score);
+    pickScores.forEach((s,i)=>{
+      const team=S.teams.find(t=>t.rosterId===s.rosterId);if(!team)return;
+      if(!team.posPercentile)team.posPercentile={};
+      team.posPercentile['PICKS']=i/pickScores.length;
+    });
+
+    // Step 4: Recompute surplus/needs and isCapitalRich from rescaled scores
+    S.teams.forEach(t=>{
+      t.surplus=['QB','RB','WR','TE'].filter(pos=>t.posScores[pos]>=67);
+      t.needs=['QB','RB','WR','TE'].filter(pos=>t.posScores[pos]<=38);
+      t.isCapitalRich=t.r1Count>=3&&t.needs.length>=1;
+    });
+
+    // Step 5: Reassign archetypes using rescaled scores — no bias, pure percentile
+    S.teams=assignArchetypes(S.teams,isSF);
+    S.teams.sort((a,b)=>b.score-a.score);
+
+    setL('Building trade boards…');
+    S.teams.forEach(t=>{t.trades=buildTradeBoard(t,S.teams);});
+
+    renderOv(isSF);show('sc-ov');
+    // Load rookie board in background
+    if(!RB.loaded[RB.year])loadRookies(RB.year);
+
+  }catch(e){console.error(e);setL('⚠ '+e.message);document.getElementById('ldtxt').style.color='#ef4444';}
+}
+
+// ── TRADE BOARD ──
+// ── PICK HELPERS ──
+function getBestTradePick(rosterId,round,preferLate){
+  const picks=(S.pickDetails[rosterId]||[]).filter(p=>p.round===round);
+  if(!picks.length)return null;
+  return picks.sort((a,b)=>preferLate?(a.val-b.val):(b.val-a.val))[0];
+}
+function getPicksForOffer(rosterId,arch){
+  const picks=(S.pickDetails[rosterId]||[]).filter(p=>p.round<=3);
+  const preferLate=arch==='winnow'||arch==='contender';
+  return picks.sort((a,b)=>{
+    if(a.round!==b.round)return a.round-b.round;
+    return preferLate?(a.val-b.val):(b.val-a.val);
+  });
+}
+function receiverPickValue(pick,receiverArch){
+  if(receiverArch==='rebuilding'||receiverArch==='rising')return pick.val;
+  const yearsOut=parseInt(pick.season||S.curSeason)-S.curSeason;
+  const disc=yearsOut<=0?0.88:yearsOut===1?0.72:0.60;
+  return Math.round(pick.val*disc);
+}
+function posPercentileRank(team,pos){return team.posPercentile?.[pos]??0.5;}
+function tradeUrgency(team){
+  const wins=team.wins||0,losses=team.losses||0,total=wins+losses,inSeason=total>=4;
+  if(team.arch==='winnow'&&wins>losses&&inSeason)return'now';
+  if(team.arch==='winnow')return'soon';
+  if(team.arch==='contender'&&wins>losses&&inSeason)return'now';
+  if(team.arch==='contender')return'soon';
+  if(team.arch==='transitioning')return'soon';
+  return'offseason';
+}
+function overpayMultiplier(team){
+  const u=tradeUrgency(team);
+  if(u==='now'&&team.arch==='winnow')return 1.22;
+  if(u==='now'&&team.arch==='contender')return 1.18;
+  if(u==='soon')return 1.10;
+  return 1.05;
+}
+
+// Iterative package builder — no hard limit, adds pieces until value met
+function buildPackage(rosterId,arch,targetVal,maxSpend,excludePos,partnerArch){
+  const pkg=[];
+  const team=S.teams.find(t=>t.rosterId===rosterId);
+  if(!team)return null;
+  const preferLate=arch==='winnow'||arch==='contender';
+  // One depth player (skip #1 at each pos, skip excludePos)
+  let bestPlayer=null,bestVal=0;
+  ['QB','RB','WR','TE'].forEach(pos=>{
+    if(pos===excludePos)return;
+    const pct=team.posPercentile?.[pos]??0.5;
+    if(pct>0.45)return;
+    const depth=(team.byPos[pos]||[]).filter(p=>p.val>800).slice(1);
+    const c=depth[0];
+    if(c&&c.val>bestVal&&c.val<=maxSpend*0.75){bestPlayer=c;bestVal=c.val;}
+  });
+  const cliff=team.cliffAssets[0];
+  if(cliff&&cliff.val>bestVal&&cliff.val<=maxSpend*0.75){bestPlayer={...cliff,isCliff:true};bestVal=cliff.val;}
+  if(bestPlayer)pkg.push({type:'player',...bestPlayer});
+  // Stack picks until value met
+  const avail=getPicksForOffer(rosterId,arch);
+  for(const pick of avail){
+    const pkgTotal=pkg.reduce((s,a)=>s+(a.val||0),0);
+    if(pkgTotal>=maxSpend)break;
+    const rv=receiverPickValue(pick,partnerArch||'contender');
+    const partnerSees=pkg.reduce((s,a)=>s+(a.receiverVal||a.val||0),0);
+    if(partnerSees>=targetVal)break;
+    pkg.push({type:'pick',round:pick.round,label:pick.label,val:pick.val,slot:pick.slot,receiverVal:rv});
+  }
+  if(!pkg.length)return null;
+  const partnerSees=pkg.reduce((s,a)=>s+(a.receiverVal||a.val||0),0);
+  return partnerSees<targetVal*0.68?null:pkg;
+}
+
+function buildBuyerReturn(buyer,assetVal){
+  const pkg=[];let needed=assetVal*0.92;
+  const avail=getPicksForOffer(buyer.rosterId,buyer.arch);
+  for(const pick of avail){if(needed<=0)break;pkg.push({type:'pick',round:pick.round,label:pick.label,val:pick.val,slot:pick.slot});needed-=pick.val;}
+  if(needed>500){
+    buyer.surplus.flatMap(sp=>(buyer.byPos[sp]||[]).slice(1).filter(p=>p.val>800&&p.val<assetVal*0.65).slice(0,1))
+      .sort((a,b)=>Math.abs(a.val-needed)-Math.abs(b.val-needed)).slice(0,1)
+      .forEach(p=>{pkg.push({type:'player',...p});needed-=p.val;});
+  }
+  if(!pkg.length)return null;
+  return pkg.reduce((s,a)=>s+(a.val||0),0)<assetVal*0.78?null:pkg;
+}
+
+function buildTradeBoard(myTeam,allTeams){
+  const candidates=[];
+  const others=allTeams.filter(t=>t.rosterId!==myTeam.rosterId);
+  const nTeams=allTeams.length||12;
+  const topThird=0.33,botThird=0.67;
+  const maxOverpay=overpayMultiplier(myTeam);
+  const urgency=tradeUrgency(myTeam);
+  const posLabel={QB:'QB room',RB:'backfield',WR:'WR corps',TE:'TE room'};
+  const myNeeds=['QB','RB','WR','TE'].filter(pos=>posPercentileRank(myTeam,pos)>=botThird);
+  const mySurplus=['QB','RB','WR','TE'].filter(pos=>posPercentileRank(myTeam,pos)<=topThird);
+
+  // ACQUIRE: I need a position, find surplus partner
+  myNeeds.forEach(needPos=>{
+    others.forEach(partner=>{
+      if(posPercentileRank(partner,needPos)>topThird)return;
+      const partnerWants=partner.arch==='rebuilding'||partner.arch==='rising';
+      const iCanFill=mySurplus.some(sp=>posPercentileRank(partner,sp)>=botThird);
+      if(!partnerWants&&!iCanFill)return;
+      const partnerPlayers=(partner.byPos[needPos]||[]).filter(p=>p.val>1500).sort((a,b)=>b.val-a.val);
+      if(!partnerPlayers.length)return;
+      const theyGivePlayer=partnerPlayers.length>=2?partnerPlayers[1]:partnerPlayers[0];
+      const targetVal=theyGivePlayer.val;
+      const weGive=buildPackage(myTeam.rosterId,myTeam.arch,targetVal,targetVal*maxOverpay,needPos,partner.arch);
+      if(!weGive?.length)return;
+      const myVal=weGive.reduce((s,a)=>s+(a.val||0),0);
+      const pickCount=weGive.filter(a=>a.type==='pick').length;
+      const tradeType=pickCount>=2?'REBUILD HAUL':pickCount===1?'ACQUIRE':'PLAYER SWAP';
+      candidates.push({type:'acquire',tradeType,needPos,partner,
+        theyGive:[{type:'player',...theyGivePlayer}],weGive,myVal,theirVal:targetVal,urgency,
+        score:scoreTradeMatch(myTeam,partner,needPos,theyGivePlayer,weGive),
+        pros:buildTradePros(myTeam,needPos,[{type:'player',...theyGivePlayer}],partner,weGive),
+        cons:buildTradeCons(myTeam,weGive,[{type:'player',...theyGivePlayer}],needPos,partner),
+      });
+    });
+  });
+
+  // SELL HIGH: aging/cliff assets
+  myTeam.cliffAssets.slice(0,3).forEach(asset=>{
+    others.filter(t=>t.arch==='winnow'||t.arch==='contender'||t.arch==='transitioning')
+      .filter(t=>posPercentileRank(t,asset.pos)>=botThird)
+      .sort((a,b)=>a.posScores[asset.pos]-b.posScores[asset.pos]).slice(0,2)
+      .forEach(buyer=>{
+        const ret=buildBuyerReturn(buyer,asset.val);if(!ret?.length)return;
+        const theirVal=ret.reduce((s,a)=>s+(a.val||0),0);
+        const pickCount=ret.filter(a=>a.type==='pick').length;
+        candidates.push({type:'sell',tradeType:pickCount>=2?'SELL HIGH — MULTI PICK':'SELL HIGH',
+          asset,partner:buyer,theyGive:ret,weGive:[{type:'player',...asset}],
+          myVal:asset.val,theirVal,urgency:'now',
+          score:90+Math.round(asset.val/200),
+          pros:buildSellPros(myTeam,asset,buyer,ret),
+          cons:buildSellCons(myTeam,asset),
+        });
+      });
+  });
+
+  // SELL SURPLUS DEPTH
+  mySurplus.forEach(surplusPos=>{
+    const myPlayers=(myTeam.byPos[surplusPos]||[]).filter(p=>p.val>1500).sort((a,b)=>b.val-a.val);
+    if(myPlayers.length<2)return;
+    const assetToSell=myPlayers[1];
+    others.filter(t=>posPercentileRank(t,surplusPos)>=botThird)
+      .sort((a,b)=>a.posScores[surplusPos]-b.posScores[surplusPos]).slice(0,2)
+      .forEach(buyer=>{
+        const ret=buildBuyerReturn(buyer,assetToSell.val);if(!ret?.length)return;
+        const theirVal=ret.reduce((s,a)=>s+(a.val||0),0);
+        const pickCount=ret.filter(a=>a.type==='pick').length;
+        candidates.push({type:'sell',tradeType:pickCount>=2?'SELL — MULTI PICK':'SELL DEPTH',
+          asset:assetToSell,partner:buyer,theyGive:ret,weGive:[{type:'player',...assetToSell}],
+          myVal:assetToSell.val,theirVal,urgency,
+          score:60+Math.round(assetToSell.val/300),
+          pros:buildSellPros(myTeam,assetToSell,buyer,ret),
+          cons:buildSellCons(myTeam,assetToSell),
+        });
+      });
+  });
+
+  candidates.sort((a,b)=>b.score-a.score);
+  return candidates.slice(0,3);
+}
+
+function scoreTradeMatch(myTeam,partner,needPos,theyGive,weGive){
+  let score=(theyGive.val||0)/100;
+  score+=posPercentileRank(myTeam,needPos)*50;
+  const am={'winnow-rebuilding':30,'winnow-rising':25,'contender-rebuilding':25,'contender-rising':20,'transitioning-rebuilding':20};
+  score+=(am[`${myTeam.arch}-${partner.arch}`]||5);
+  const myPickVal=weGive.filter(a=>a.type==='pick').reduce((s,a)=>s+(a.val||0),0);
+  if((partner.arch==='rebuilding'||partner.arch==='rising')&&myPickVal>2000)score+=20;
+  if(weGive.filter(a=>a.type==='pick').length>=2)score+=10;
+  return Math.round(score);
+}
+
+function buildTradePros(myTeam,needPos,theyGive,partner,weGive){
+  const posLabel={QB:'QB room',RB:'backfield',WR:'WR corps',TE:'TE room'};
+  const pl=theyGive[0];const pros=[];
+  pros.push(`<strong>Fills your ${posLabel[needPos]} gap</strong> — you rank in the bottom third of the league here`);
+  if(pl?.age&&pl.age<=(PRIME_LOW[needPos]||23)+3)pros.push(`<strong>${pl.name} is ${pl.age}y old</strong> — fits your timeline`);
+  if(partner.arch==='rebuilding'||partner.arch==='rising')pros.push(`<strong>${partner.teamName} is motivated to deal</strong> — they want picks and youth`);
+  const picks=weGive.filter(a=>a.type==='pick');
+  if(picks.length>=2)pros.push(`<strong>Multi-pick package: ${picks.map(p=>p.label).join(' + ')}</strong> — gives ${partner.teamName} the capital they need`);
+  else if(picks.length===1)pros.push(`<strong>Package includes ${picks[0].label}</strong> — tangible capital ${partner.teamName} values`);
+  return pros;
+}
+
+function buildTradeCons(myTeam,weGive,theyGive,needPos,partner){
+  const posLabel={QB:'QB room',RB:'backfield',WR:'WR corps',TE:'TE room'};const cons=[];
+  weGive.forEach(a=>{
+    if(a.type==='player'&&a.pos){
+      const pct=myTeam.posPercentile?.[a.pos]??0.5,cnt=(myTeam.byPos[a.pos]||[]).length;
+      if(pct<=0.50)cons.push(`<strong>Sending ${a.name} weakens your ${posLabel[a.pos]}</strong>`);
+      if(cnt<=2)cons.push(`<strong>Only ${Math.max(0,cnt-1)} player${cnt-2!==0?'s':''} remain at ${a.pos}</strong> — injury risk`);
+      if(a.isCliff)cons.push(`<strong>${a.name} is near their age cliff</strong>`);
+    }
+    if(a.type==='pick')cons.push(`<strong>Giving up ${a.label}</strong> — reduces draft capital`);
+  });
+  const myV=weGive.reduce((s,a)=>s+(a.val||0),0),thV=theyGive.reduce((s,a)=>s+(a.val||0),0);
+  const op=myV>thV?Math.round((myV/thV-1)*100):0;
+  if(op>=15)cons.push(`<strong>Overpaying ~${op}%</strong> — mid-season urgency only`);
+  else if(op>=8)cons.push(`<strong>Slight overpay (~${op}%)</strong> — try to negotiate`);
+  return cons;
+}
+
+function buildSellPros(myTeam,asset,buyer,ret){
+  const pros=[];
+  pros.push(`<strong>Sell ${asset.name} at peak value</strong> — production still commands a premium`);
+  const picks=ret.filter(a=>a.type==='pick');
+  if(picks.length>=2)pros.push(`<strong>Haul: ${picks.map(p=>p.label).join(' + ')}</strong> — multiple picks fit your rebuild timeline`);
+  else if(picks.length===1)pros.push(`<strong>${picks[0].label} (${Math.round(picks[0].val/100)/10}k)</strong> — capital that fits your timeline`);
+  ret.filter(a=>a.type==='player').forEach(p=>{if(p.age&&p.age<(PRIME_LOW[p.pos||'WR']||23)+2)pros.push(`<strong>${p.name} (${p.age}y)</strong> — ascending, better long-term fit`);});
+  pros.push(`<strong>${buyer.teamName} (${AD[buyer.arch]?.label||buyer.arch}) is motivated</strong>`);
+  return pros;
+}
+function buildSellCons(myTeam,asset){
+  const posLabel={QB:'QB room',RB:'backfield',WR:'WR corps',TE:'TE room'};
+  const rem=(myTeam.byPos[asset.pos]||[]).filter(p=>p.id!==asset.id);const cons=[];
+  cons.push(rem.length<=1?`<strong>Leaves you critically thin at ${asset.pos}</strong>`:`<strong>Reduces ${posLabel[asset.pos]} depth to ${rem.length}</strong>`);
+  if(asset.cliffLabel==='Late Prime')cons.push(`<strong>${asset.name} still has 1–2 productive years</strong>`);
+  return cons;
+}
+
+function buildRoadmap(t,isSF){
+  const{arch,transType,y1,y2,y3,rawY1,rawY2,rawY3,posScores,needs,surplus,cliffAssets,youngCore,pickCaps,wins,losses,r1Count,isCapitalRich,avgAge,traj}=t;
+  const posLabel={QB:'QB room',RB:'backfield',WR:'WR corps',TE:'TE room'};
+  const ranked=Object.entries(posScores).sort((a,b)=>a[1]-b[1]);
+  const wp=ranked[0][0],ws=ranked[0][1];
+  const sp=ranked[ranked.length-1][0];
+  const wpGrade=(pct=>{return pct<=0.08?'A+':pct<=0.20?'A':pct<=0.38?'B+':pct<=0.55?'B':pct<=0.70?'C+':pct<=0.85?'C':'D';})(t.posPercentile?.[wp]??0.85);
+  const spGrade=(pct=>{return pct<=0.08?'A+':pct<=0.20?'A':pct<=0.38?'B+':pct<=0.55?'B':pct<=0.70?'C+':pct<=0.85?'C':'D';})(t.posPercentile?.[sp]??0.15);
+  const trajLabel=traj==='rising'?'📈 Growing':traj==='slight_up'?'↑ Slight growth':traj==='declining'?'📉 Declining':traj==='slight_down'?'↓ Softening':'→ Stable';
+  const deltaY3=y3-y1;const deltaStr=(deltaY3>=0?'+':'')+deltaY3+' pts by Y3';
+  const curPicks=(S.pickDetails[t.rosterId]||[]).filter(p=>String(p.season)===String(S.curSeason)&&p.round===1).sort((a,b)=>(a.slot||99)-(b.slot||99));
+  const futurePicks=(S.pickDetails[t.rosterId]||[]).filter(p=>String(p.season)!==String(S.curSeason)&&p.round===1);
+  const bestPick=curPicks[0]||futurePicks[0];
+  const pickSummary=curPicks.length?`${curPicks.length} pick${curPicks.length>1?'s':''} in the ${S.curSeason} draft (${curPicks.map(p=>p.label.replace(String(S.curSeason)+' ','')).join(', ')})`:null;
+  const contenderThreshold=S.teams.slice(0,Math.ceil(S.teams.length*0.40)).slice(-1)[0]?.rawY1||rawY1*1.1;
+  const gapToContention=Math.max(0,Math.round(contenderThreshold-rawY3));
+  const approxPickVal=bestPick?.round===1?(ROOKIE_EV[Math.min(bestPick.slot||6,12)]?.y3||3000):0;
+  const picksCloseGap=gapToContention>0&&approxPickVal>0?Math.min(100,Math.round((curPicks.length*approxPickVal/gapToContention)*100)):0;
+  const sell1=cliffAssets[0]?.name,sell2=cliffAssets[1]?.name;
+  const young1=youngCore[0]?.name,young2=youngCore[1]?.name;
+  const trajContext=`<strong>Trajectory: ${trajLabel}</strong> — ${deltaStr}. ${traj==='rising'?'Picks and young core driving genuine growth.':traj==='slight_up'?'Modest improvement. More capital could steepen this.':traj==='declining'?'Roster aging faster than restocked. Action required.':traj==='slight_down'?'Slight softening — manageable with targeted moves.':'Core stable but not growing. Strategic moves needed.'}`;
+
+  const plans={
+    winnow:{
+      y1:{label:'Win Now',color:'var(--wn)',moves:[
+        {i:'📊',t:trajContext},
+        {i:'🏆',t:`<strong>Your window is open.</strong> At ${y1}/100 you're competing — every decision must maximize this season.`},
+        {i:'🎯',t:`<strong>${posLabel[wp]} grades ${wpGrade} (${ws}/100).</strong> ${isSF&&wp==='QB'?'In superflex a QB upgrade could be the difference.':'This gap is costing you a championship.'}`},
+        sell1?{i:'🔄',t:`<strong>Sell ${sell1}${sell2?' or '+sell2:''} at or near peak.</strong> Dynasty value for aging players drops fast — contenders will overpay.`}:{i:'⚔️',t:`<strong>Make one targeted move to address ${posLabel[wp]}.</strong> Don't rebuild, just upgrade.`},
+      ]},
+      y2:{label:'Sustain',color:'var(--wn)',moves:[
+        {i:'📊',t:`<strong>Projected Y2: ${y2}/100.</strong> ${y2>=y1-5?'Core holding — you may have more runway than expected.':'Decline starting. This may be your final peak season.'}`},
+        sell1?{i:'🔄',t:`<strong>Move ${sell1} in Y2 if you didn't already.</strong> The age cliff accelerates — market value won't recover.`}:{i:'📋',t:`<strong>Audit players 30+ for trade value</strong> before it evaporates.`},
+        {i:'💰',t:`<strong>Reinvest into ${youngCore.length?young1+' or similar young talent':'players 25 or younger'}.</strong> Plant seeds for the next cycle.`},
+      ]},
+      y3:{label:'Evaluate',color:'var(--co)',moves:[
+        {i:'📊',t:`<strong>Projected Y3: ${y3}/100 (${deltaStr}).</strong> ${y3>=55?'Still viable — assess honestly.':'Window closing. Begin managed transition.'}`},
+        {i:'🔍',t:youngCore.length>=2?`<strong>${young1} and ${young2} as next-cycle anchors.</strong> Build your future around their prime.`:`<strong>Evaluate whether you have a young core emerging.</strong> If not, begin building one now.`},
+      ]},
+    },
+    contender:{
+      y1:{label:'Contend',color:'var(--co)',moves:[
+        {i:'📊',t:trajContext},
+        {i:'🏆',t:`<strong>You're ${y1}/100 — top tier but not yet the favorite.</strong> One or two moves separates you from a championship.`},
+        {i:'🎯',t:`<strong>${posLabel[wp]} grades ${wpGrade} (${ws}/100).</strong> Fixing this is your most direct path to a title.${bestPick?` Your ${bestPick.label} could address this.`:''}`},
+        (wins||0)>(losses||0)?{i:'⏰',t:`<strong>You're ${wins}-${losses}. Urgency is real.</strong> Mid-season contenders can overpay — be ready to move.`}:{i:'🔧',t:`<strong>Offseason: negotiate fair value.</strong> Don't overpay until your record justifies it.`},
+      ]},
+      y2:{label:'Peak',color:'var(--co)',moves:[
+        {i:'📊',t:`<strong>Projected Y2: ${y2}/100.</strong> ${y2>=y1?'Trajectory positive — this may be your best season.':'Slight softening. Reinforce now.'}`},
+        {i:'💡',t:young1?`<strong>${young1}${young2?' and '+young2:''} entering prime.</strong> Your window extends further than most contenders.`:`<strong>Prioritize acquiring players 25–27</strong> to extend your window.`},
+      ]},
+      y3:{label:'Extend',color:'var(--co)',moves:[
+        {i:'📊',t:`<strong>Projected Y3: ${y3}/100 (${deltaStr}).</strong> ${y3>=y1-8?'Extended window — rare.':'Window tightening. Begin seeding next cycle.'}`},
+      ]},
+    },
+    rising:{
+      y1:{label:'Ascending',color:'var(--ri)',moves:[
+        {i:'📊',t:trajContext},
+        {i:'📈',t:`<strong>Building toward a real window.</strong> At ${y1}/100 you're not competing yet — but the trajectory (${deltaStr}) tells the real story.`},
+        {i:'💎',t:young1?`<strong>${young1}${young2?' and '+young2:''} are your cornerstones.</strong> Every trade must align with their prime window.`:`<strong>Identify your 2–3 cornerstones under ${(PRIME_LOW.WR||23)+3}.</strong> Build every decision around their peak years.`},
+        gapToContention>0?{i:'🎯',t:`<strong>Gap to contention: ~${gapToContention} FC.</strong> ${picksCloseGap>0?`Your picks could close ${picksCloseGap}% of this by Y3.`:'Target trades to accelerate — one elite player changes the math.'}`}:{i:'🏆',t:`<strong>You're already at contender level by Y3.</strong> Begin shifting to win-now strategy.`},
+      ]},
+      y2:{label:'Accelerate',color:'var(--ri)',moves:[
+        {i:'📊',t:`<strong>Projected Y2: ${y2}/100.</strong> ${y2>y1+4?'Ascending confirmed — start converting capital to players.':'Modest growth. Ensure your cornerstones are developing.'}`},
+        pickSummary?{i:'🎟️',t:`<strong>${pickSummary}.</strong> Draft for need at ${posLabel[wp]} (${wpGrade}).`}:{i:'🔍',t:`<strong>Acquire picks strategically.</strong> Your Y3 window depends on them.`},
+      ]},
+      y3:{label:'Arrive',color:'var(--ri)',moves:[
+        {i:'📊',t:`<strong>Projected Y3: ${y3}/100 (${deltaStr}).</strong> ${y3>=60?'Window open. Begin competing.':'One or two more moves and you arrive.'}`},
+        young1?{i:'🚀',t:`<strong>${young1} entering prime.</strong> Make your first win-now move.`}:{i:'🎯',t:`<strong>Shift to win-now strategy.</strong> Your rebuild is complete.`},
+      ]},
+    },
+    rebuilding:{
+      y1:{label:'Rebuild',color:'var(--re)',moves:[
+        {i:'📊',t:trajContext},
+        {i:'🏗️',t:`<strong>Score: ${y1}/100 — honest starting point.</strong> The goal is a core that peaks in 3–4 years, not to compete now.`},
+        {i:'💰',t:`<strong>Accumulate picks aggressively.</strong> ${r1Count>=2?`You have ${r1Count} future 1sts — that's a real foundation.`:'Every 1st round pick you add is a potential cornerstone.'}`},
+        sell1?{i:'🔄',t:`<strong>Trade ${sell1}${sell2?' and '+sell2:''} now.</strong> Convert aging production into picks and youth.`}:{i:'🎯',t:`<strong>Identify every player 28+ without long-term upside.</strong> They're trade chips, not cornerstones.`},
+        {i:'🎯',t:`<strong>${posLabel[wp]} grades ${wpGrade}.</strong> ${gapToContention>0?`Gap to contention: ~${gapToContention} FC. Target this over 2–3 years.`:'Draft and trade to fill this systematically.'}`},
+      ]},
+      y2:{label:'Develop',color:'var(--re)',moves:[
+        {i:'📊',t:`<strong>Projected Y2: ${y2}/100.</strong> ${y2>y1+5?'Progress visible — your picks are contributing.':'Patience. Rebuilds take 3–4 years.'}`},
+        bestPick?{i:'🎟️',t:`<strong>${pickSummary||bestPick.label}.</strong> Your highest pick projects to add significant FC value by Y3.`}:{i:'📋',t:`<strong>Acquire picks where possible.</strong> Your Y3 score depends on their expected value.`},
+        {i:'💡',t:youngCore.length?`<strong>${young1||'Your young core'} is your priority in every trade.</strong> Don't sell cheap.`:`<strong>Target players 22–25.</strong> You need cornerstones in prime by Year 3.`},
+      ]},
+      y3:{label:'Emerge',color:'var(--ri)',moves:[
+        {i:'📊',t:`<strong>Projected Y3: ${y3}/100 (${deltaStr}).</strong> ${y3>=50?'Rebuild materializing. Shift to rising-team strategy.':'Some rebuilds take 4 years. Evaluate your cornerstones honestly.'}`},
+        young1?{i:'🚀',t:`<strong>${young1} entering prime window.</strong> Make your first win-now signal.`}:{i:'🎯',t:`<strong>Begin your first win-now move.</strong> Signal the rebuild is complete.`},
+      ]},
+    },
+    transitioning:{
+      y1:{label:'Decide',color:'var(--tr)',moves:[
+        {i:'📊',t:trajContext},
+        {i:'⚖️',t:`<strong>${deltaY3>=0?`Picks and youth push Y3 to ${y3}/100 — constructive trajectory despite aging.`:`Score projects to drop ${Math.abs(deltaY3)} pts by Y3.`}</strong> This is the inflection: commit to winning or begin managed transition.`},
+        transType==='capital'?
+          {i:'🎯',t:`<strong>Capital-rich opportunity.</strong> You hold ${r1Count} future 1sts — your ${posLabel[wp]} (${wpGrade}) is the hole to solve. Deploy capital surgically.`}:
+          sell1?{i:'🔄',t:`<strong>Sell ${sell1}${sell2?' and '+sell2:''} now.</strong> Contenders will overpay for current production.`}:{i:'🔍',t:`<strong>Audit every player for age-cliff risk.</strong> Replacements needed.`},
+        young1?{i:'💡',t:`<strong>${young1}${young2?' and '+young2:''} are your future anchors.</strong> All decisions must align with their prime.`}:{i:'⚠️',t:`<strong>No clear young cornerstones.</strong> Acquiring 1–2 under ${(PRIME_LOW.WR||23)+2} is your most urgent priority.`},
+      ]},
+      y2:{label:'Commit',color:'var(--tr)',moves:[
+        {i:'📊',t:`<strong>Projected Y2: ${y2}/100.</strong> ${y2>=y1-5?'Core holding. Compete while transitioning.':'Decline accelerating. Urgency increases.'}`},
+        {i:'🔄',t:`<strong>Your ${posLabel[sp]} (${spGrade}) is your best trade chip.</strong> Use surplus to acquire youth at ${posLabel[wp]}.`},
+      ]},
+      y3:{label:'New Cycle',color:'var(--ri)',moves:[
+        {i:'📊',t:`<strong>Projected Y3: ${y3}/100 (${deltaStr}).</strong> ${y3>=55?'Transition successful — new core materializing.':'Accelerate youth acquisition.'}`},
+        young1?{i:'🚀',t:`<strong>New core anchored by ${young1}${young2?' and '+young2:''}.</strong> Shift to rising-team strategy.`}:{i:'🎯',t:`<strong>Shift to aggressive youth acquisition.</strong> Window is 2 years out.`},
+      ]},
+    },
+  };
+  return plans[arch]||plans.rebuilding;
+}
+
+function renderOv(isSF){
+  $('ov-ln').textContent=S.name;
+  const w=S.name.split(' ');
+  $('ov-t').innerHTML=w.length>1?`${w[0]} <span>${w.slice(1).join(' ')}</span>`:`<span>${S.name}</span>`;
+  $('ov-m').textContent=S.meta;
+  if(S.leagueDraftStartTime>0)initLeagueDraftCountdown(S.leagueDraftStartTime);
+  else initLeagueDraftCountdown(new Date('2026-04-25T00:00:00Z').getTime());
+  const cnt={winnow:0,contender:0,rising:0,rebuilding:0,transitioning:0};
+  S.teams.forEach(t=>cnt[t.arch]++);
+  $('ov-wn').textContent=cnt.winnow;$('ov-c').textContent=cnt.contender;
+  $('ov-r').textContent=cnt.rising;$('ov-b').textContent=cnt.rebuilding;
+
+  $('wmap-body').innerHTML=S.teams.map(t=>{
+    const a=AD[t.arch];
+    const bar=(v,c)=>`<div><div class="wm-bt"><div class="wm-bf" style="width:${v}%;background:${c}"></div></div><div class="wm-bv">${v}/100</div></div>`;
+    const trajIcon=t.traj==='rising'?'↑↑':t.traj==='slight_up'?'↑':t.traj==='declining'?'↓↓':t.traj==='slight_down'?'↓':'→';
+    const trajColor=t.traj==='rising'?'var(--teal)':t.traj==='slight_up'?'#86efac':t.traj==='declining'?'var(--red)':t.traj==='slight_down'?'#fca5a5':'var(--dim)';
+    const delta3=t.y3-t.y1;const deltaStr=(delta3>0?'+':'')+delta3;
+    return`<div class="wm-row" onclick="openTeam(${t.rosterId})">
+      <div class="wm-team"><div class="wm-dot" style="background:${t.color}"></div><div><div class="wm-nm">${t.teamName}</div><div class="wm-ow">${t.owner}</div></div></div>
+      <div class="wm-cell">${bar(t.y1,t.color)}</div>
+      <div class="wm-cell"><div style="display:flex;align-items:center;gap:.4rem">${bar(t.y2,t.color)}<span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.8rem;font-weight:700;color:${trajColor}">${trajIcon}</span></div></div>
+      <div class="wm-cell"><div style="display:flex;align-items:center;gap:.4rem">${bar(t.y3,t.color)}<span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.72rem;font-weight:700;color:${trajColor}">${deltaStr}</span></div></div>
+      <div class="wm-cell"><div class="ab" style="color:${a.color};border-color:${a.color}44;background:${a.bg}">${a.emoji} ${a.label}</div></div>
+    </div>`;
+  }).join('');
+  renderCards('all');
+}
+
+function renderCards(filter){
+  const teams=filter==='all'?S.teams:S.teams.filter(t=>t.arch===filter);
+  $('tgrid').innerHTML=teams.map(t=>{
+    const a=AD[t.arch];
+    const trend=t.y3>t.y1+6?'↑':t.y3<t.y1-6?'↓':'→';
+    const tc=trend==='↑'?'var(--teal)':trend==='↓'?'var(--red)':'var(--dim)';
+    const hz={winnow:'Window closing — win it NOW',contender:'Window open now',rising:'12–18 months out',rebuilding:'2–3 year rebuild',transitioning:t.transType==='capital'?'Capital-rich, deploying':'At a crossroads'}[t.arch];
+    const histHTML=histBadgesHTML(t.history,2);
+    const tradeAct=t.activity?.trades||0,waiverAct=t.activity?.waivers||0;
+    return`<div class="tc fu" onclick="openTeam(${t.rosterId})" style="border-top-color:${t.color};--team-color:${t.color}">
+      <div class="tc-top">
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <div class="tc-av" style="background:${t.color}">${ini(t.teamName)}</div>
+          <div><div class="tc-nm">${t.teamName}</div><div class="tc-ow">${t.owner}</div></div>
+        </div>
+        <div class="ab" style="color:${a.color};border-color:${a.color}44;background:${a.bg}">${a.emoji} ${a.label}</div>
+      </div>
+      ${histHTML?`<div class="tc-badges">${histHTML}</div>`:''}
+      <div class="tc-sr">
+        <div class="tc-sc">${t.score}</div>
+        <div class="tc-sm"><div class="tc-sl">Dynasty Score</div><div class="tc-hz" style="color:${a.color}">${hz}</div></div>
+        <div class="tc-tr" style="color:${tc}">${trend}</div>
+      </div>
+      <div class="tc-bars">
+        ${['QB','RB','WR','TE'].map(pos=>`<div class="tc-br"><div class="tc-bl" style="color:${PC[pos]}">${pos}</div><div class="tc-bt"><div class="tc-bf" style="width:${t.posScores[pos]}%;background:${PC[pos]}"></div></div><div class="tc-bv">${t.posScores[pos]}</div></div>`).join('')}
+      </div>
+      <div class="tc-ft">
+        <div class="tc-rec"><span class="w">${t.wins}</span>–<span class="l">${t.losses}</span> · Avg ${t.avgAge}y${t.r1Count>=3?` · <span style="color:var(--teal)">${t.r1Count} 1sts</span>`:''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterA(f,btn){document.querySelectorAll('.afb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCards(f);}
+
+// ── RENDER DEEP DIVE ──
+function openTeam(rid){
+  const t=S.teams.find(x=>x.rosterId===rid);if(!t)return;
+  $('dv-crumb').textContent=t.teamName;renderDive(t);show('sc-dv');
+}
+
+function assetTag(a){
+  if(!a)return'';
+  if(a.type==='pick')return`<div class="tasset"><span class="ptag" style="background:rgba(59,130,246,.2);color:#60a5fa">PICK</span>${a.label}<span class="aval">${Math.round((a.val||0)/100)/10}k</span></div>`;
+  const c=PC[a.pos]||'#7c8799';
+  const cliff=a.isCliff||a.cliffLabel?` <span style="font-size:.58rem;color:#ef4444">(cliff)</span>`:'';
+  return`<div class="tasset"><span class="ptag" style="background:${c}20;color:${c}">${a.pos||'?'}</span>${a.name||'?'}${cliff}<span class="aval">${Math.round((a.val||0)/100)/10}k</span></div>`;
+}
+
+function histBadgesHTML(history,max){
+  if(!history||!history.length)return'';
+  return history.slice(0,max||99).map(h=>{
+    if(h.result==='champ')return`<span class="hbadge champ">🏆 ${h.season} Champ</span>`;
+    if(h.result==='runner')return`<span class="hbadge runner">🥈 ${h.season} Runner-Up</span>`;
+    if(h.result==='last')return`<span class="hbadge last">🚽 ${h.season} Last Place</span>`;
+    if(h.result==='playoffs')return`<span class="hbadge playoffs">✅ ${h.season} Playoffs</span>`;
+    return'';
+  }).filter(Boolean).join('');
+}
+
+function renderDive(t){
+  const a=AD[t.arch];const plan=buildRoadmap(t,t.isSF);
+  const caps=t.pickCaps||{r1:0,r2:0,r3:0,r4:0};
+  const pillHTML=[[caps.r1,'r1','1st'],[caps.r2,'r2','2nd'],[caps.r3,'r3','3rd+']].filter(([n])=>n>0).map(([n,cls,lbl])=>`<span class="ppill ${cls}">${n}× ${lbl}</span>`).join('');
+  const netCap=caps.r1*PVAL[1]+caps.r2*PVAL[2]+caps.r3*PVAL[3];
+  const avgNetCap=(S.leagueAvgPicks.r1*PVAL[1]+S.leagueAvgPicks.r2*PVAL[2]+S.leagueAvgPicks.r3*PVAL[3])*3;
+  const surplus=netCap-avgNetCap;
+  const surplusLabel=surplus>2000?`+${Math.round(surplus/100)/10}k vs avg`:surplus<-2000?`${Math.round(surplus/100)/10}k vs avg`:'≈ avg';
+  const surplusColor=surplus>2000?'var(--teal)':surplus<-2000?'var(--red)':'var(--dim)';
+
+  // Activity
+  const act=t.activity||{trades:0,waivers:0};
+  const avgT=S.leagueAvgActivity.trades||1,avgW=S.leagueAvgActivity.waivers||1;
+
+  const strengths=[],concerns=[];
+  if(t.posScores.QB>=70)strengths.push(`Strong QB room with ${(t.byPos.QB||[]).filter(p=>p.val>1000).length} meaningful contributors`);
+  else if(t.posScores.QB<35)concerns.push(`Thin at QB (grade: ${t.posScores.QB})${t.isSF?' — critical in superflex':''}`);
+  if(t.posScores.RB>=68)strengths.push(`Deep backfield with ${(t.byPos.RB||[]).filter(p=>p.val>1500).length} high-value contributors`);
+  else if(t.posScores.RB<30)concerns.push(`RB corps below average (grade: ${t.posScores.RB})`);
+  if(t.posScores.WR>=70)strengths.push(`Elite WR depth — highest-value position on this roster`);
+  else if(t.posScores.WR<35)concerns.push(`WR room lacks depth and value (grade: ${t.posScores.WR})`);
+  if(t.posScores.TE>=60)strengths.push(`Above-average TE value — positional advantage over most teams`);
+  else if(t.posScores.TE<25)concerns.push(`TE is a significant gap (grade: ${t.posScores.TE})`);
+  if(caps.r1>=3)strengths.push(`Strong draft capital: ${caps.r1} future 1st-round picks${t.isCapitalRich?' — strategic accumulator':''}`);
+  else if(caps.r1<=1&&caps.r2<=1)concerns.push(`Limited draft capital (${caps.r1} future 1sts) — restricted flexibility`);
+  if(t.y3>t.y1+8)strengths.push(`Ascending 3-year trajectory — projected +${t.y3-t.y1} pts`);
+  if(t.y1>t.y3+15)concerns.push(`Declining 3-year trajectory — projected −${t.y1-t.y3} pts by Year 3`);
+  if(t.youngCore.length>=3)strengths.push(`${t.youngCore.length} young cornerstones under prime age`);
+  if(t.cliffAssets.length>=2)concerns.push(`${t.cliffAssets.length} players at or near age cliff`);
+
+  const posSection=(pos,label)=>{
+    const players=(t.byPos[pos]||[]).slice(0,6);
+    const g=t.posScores[pos];
+    const grade=g>=85?'A+':g>=75?'A':g>=65?'B+':g>=55?'B':g>=45?'C+':g>=35?'C':'D';
+    const gc=g>=65?'var(--teal)':g>=45?'#60a5fa':'var(--re)';
+    const maxV=Math.max(...players.map(p=>p.val),1);
+    return`<div class="psec">
+      <div class="psh"><div class="pst" style="color:${PC[pos]}">${label}</div><div class="psg" style="color:${gc}">${grade}</div></div>
+      <div>${players.length?players.map((p,i)=>{
+        const cs=cliffStatus(pos,p.age,p.posRank);
+        return`<div class="pp"><div class="pp-rk">${i+1}</div><div class="pp-nm">${p.name}</div><div class="pp-ag ${cs.cls}">${p.age?p.age+'y':'?'}</div><div class="pp-cliff" style="color:${cs.color};background:${cs.bg}">${cs.label}</div><div class="pp-vbar"><div class="pp-vt"><div class="pp-vf" style="width:${Math.round(p.val/maxV*100)}%;background:${PC[pos]}"></div></div><div class="pp-vv">${Math.round(p.val/100)/10}k</div></div></div>`;
+      }).join(''):'<div style="padding:.8rem 1.1rem;font-size:.78rem;color:var(--dim)">No players in FantasyCalc database</div>'}</div>
+    </div>`;
+  };
+
+  const tradeHTML=t.trades?.length?t.trades.map(trade=>{
+    const pa=AD[trade.partner.arch];
+    const weGive=trade.weGive||[];const theyGive=Array.isArray(trade.theyGive)?trade.theyGive:[trade.theyGive];
+    const diff=trade.myVal>0&&trade.theirVal>0?Math.round(Math.abs(trade.myVal-trade.theirVal)/Math.max(trade.myVal,trade.theirVal)*100):0;
+    const fairLabel=diff<8?'Fair Trade':trade.myVal>trade.theirVal?`Overpay ${diff}%`:`Gain ${diff}%`;
+    const fairCls=diff<8?'fair':trade.myVal>trade.theirVal?'premium':'slight';
+    const title=trade.type==='sell'?`Sell ${trade.asset?.name} → ${trade.partner.teamName}`:`Acquire ${trade.needPos} from ${trade.partner.teamName}`;
+    return`<div class="tcard">
+      <div class="tcard-hd"><div class="tcard-title">${title} <span style="color:${pa.color};font-weight:400;font-size:.78rem">(${pa.emoji} ${pa.label})</span></div><span class="turg ${trade.urgency}">${trade.urgency==='now'?'Do Now':trade.urgency==='soon'?'Do Soon':'Offseason'}</span></div>
+      <div class="tcard-body">
+        <div><div class="tside-lbl">${t.teamName} sends</div><div class="tassets">${weGive.map(a=>assetTag(a)).join('')}</div></div>
+        <div class="tarrow">⇄</div>
+        <div><div class="tside-lbl">${trade.partner.teamName} sends</div><div class="tassets">${theyGive.map(a=>assetTag(a)).join('')}</div></div>
+      </div>
+      <div class="tpc">
+        <div class="tpro"><div class="tpc-lbl">✓ Pros</div>${(trade.pros||[]).map(p=>`<div class="tpc-item"><span>·</span><span>${p}</span></div>`).join('')||'<div class="tpc-item"><span>·</span><span>Addresses a roster need</span></div>'}</div>
+        <div class="tcon"><div class="tpc-lbl">✗ Cons</div>${(trade.cons||[]).map(c=>`<div class="tpc-item"><span>·</span><span>${c}</span></div>`).join('')||'<div class="tpc-item"><span>·</span><span>Minimal downside identified</span></div>'}</div>
+      </div>
+      <div class="tval-row"><div class="tval-item">Sending: ${Math.round(trade.myVal/100)/10}k</div><div class="tfair ${fairCls}">${fairLabel}</div><div class="tval-item">Receiving: ${Math.round(trade.theirVal/100)/10}k</div></div>
+    </div>`;
+  }).join(''):`<div style="padding:2rem;text-align:center;color:var(--dim);font-size:.82rem;background:var(--card);border:1px solid var(--bd2);border-radius:12px">No trade matches found — roster may already be well-balanced.</div>`;
+
+  const mvs=list=>list.map(m=>`<div class="ry-mv"><div class="ry-mi">${m.i}</div><div>${m.t}</div></div>`).join('');
+
+  // History section
+  const histHTML=t.history&&t.history.length?`
+    <div class="sl" style="margin-top:0"><div class="sl-t">League History</div><div class="sl-r"></div><div class="sl-n">Past 2 seasons</div></div>
+    <div class="hist-panel">
+      ${t.history.map(h=>{
+        const resultLabel={champ:'🏆 Champion',runner:'🥈 Runner-Up',last:'🚽 Last Place',playoffs:'✅ Playoffs'}[h.result]||h.result;
+        const resultColor={champ:'#fbbf24',runner:'#9ca3af',last:'#ef4444',playoffs:'var(--teal)'}[h.result]||'var(--dim)';
+        return`<div class="hist-row"><span class="hist-season">${h.season} Season</span><span class="hist-result" style="color:${resultColor}">${resultLabel}</span></div>`;
+      }).join('')}
+    </div>`:'';
+
+  $('dv-content').innerHTML=`
+    <div class="dh fu d1">
+      <div>
+        <div class="dh-ey">Dynasty Compass · Team Roadmap</div>
+        <div class="dh-t">${t.teamName}</div>
+        <div class="dh-m">${t.owner} · ${t.wins}–${t.losses} · Avg age ${t.avgAge} · ${t.totalPlayers} players</div>
+        <div class="dh-badges">
+          <div class="ab" style="color:${a.color};border-color:${a.color}44;background:${a.bg}">${a.emoji} ${a.label}${t.transType==='capital'?' — Capital Rich':t.transType==='aging'?' — Aging Core':''}</div>
+          ${histBadgesHTML(t.history,4)}
+        </div>
+        ${pillHTML?`<div class="pick-cap"><div class="pick-cap-lbl">Future Picks</div>${pillHTML}<span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.64rem;font-weight:700;letter-spacing:.06em;color:${surplusColor};margin-left:auto">${surplusLabel}</span></div>`:''}
+      </div>
+      <div class="scp">
+        <div class="scp-l">Dynasty Score</div><div class="scp-s">${t.score}</div>
+        <div class="scp-a">${a.emoji} ${a.label}</div>
+        <div class="scp-sub">
+          <div><div class="scp-sv">${t.y1}</div><div class="scp-sl">Yr 1</div></div>
+          <div><div class="scp-sv">${t.y2}</div><div class="scp-sl">Yr 2</div></div>
+          <div><div class="scp-sv">${t.y3}</div><div class="scp-sl">Yr 3</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fu d2" style="margin-bottom:2.5rem">
+      <div class="sl"><div class="sl-t">Manager Activity</div><div class="sl-r"></div><div class="sl-n">2026 season</div></div>
+      <div class="act-panel">
+        <div class="act-grid" style="grid-template-columns:1fr 1fr">
+          <div class="act-stat"><div class="act-val">${act.trades}</div><div class="act-lbl">Trades</div></div>
+          <div class="act-stat"><div class="act-val">${act.waivers}</div><div class="act-lbl">Waiver Moves</div></div>
+        </div>
+      </div>
+      ${histHTML}
+      </div>
+
+    <div class="fu d3" style="margin-bottom:3rem">
+      <div class="sl"><div class="sl-t">3-Year Roadmap</div><div class="sl-r"></div><div class="sl-n">Net picks included · Tailored to your roster</div></div>
+      <div class="rmg">${[1,2,3].map(n=>{const p=plan[`y${n}`];const s=t[`y${n}`];const bc=s>=65?'var(--co)':s>=50?'var(--teal)':'var(--re)';return`<div class="ry"><div class="ry-yr">${S.curSeason+n-1} · Year ${n}</div><div class="ry-lbl" style="color:${p.color}">${p.label}</div><div class="ry-sr"><div class="ry-sn" style="color:${bc}">${s}</div><div class="ry-st"><div class="ry-sf" style="width:${s}%;background:${bc}"></div></div></div><div class="ry-mvs">${mvs(p.moves)}</div></div>`;}).join('')}</div>
+    </div>
+
+    <div class="fu d4" style="margin-bottom:3rem">
+      <div class="sl"><div class="sl-t">Trade Board</div><div class="sl-r"></div><div class="sl-n">Archetype-aware · Picks included · Pros & Cons</div></div>
+      ${tradeHTML}
+    </div>
+
+    <div class="fu d5" style="margin-bottom:3rem">
+      <div class="sl"><div class="sl-t">Roster Breakdown</div><div class="sl-r"></div><div class="sl-n">Sleeper age data · Elite override · FantasyCalc values</div></div>
+      <div class="pgrid">${posSection('QB','Quarterbacks')}${posSection('RB','Running Backs')}${posSection('WR','Wide Receivers')}${posSection('TE','Tight Ends')}</div>
+    </div>
+
+    <div class="scgrid fu d6">
+      <div class="scbox"><div class="sct">✓ Strengths</div>${strengths.length?strengths.map(s=>`<div class="sci"><div class="scid" style="background:var(--teal)"></div><div>${s}</div></div>`).join(''):'<div class="sci"><div class="scid" style="background:var(--dim)"></div><div>No standout strengths identified</div></div>'}</div>
+      <div class="scbox"><div class="sct">⚠ Concerns</div>${concerns.length?concerns.map(c=>`<div class="sci"><div class="scid" style="background:var(--re)"></div><div>${c}</div></div>`).join(''):'<div class="sci"><div class="scid" style="background:var(--dim)"></div><div>No major concerns identified</div></div>'}</div>
+    </div>`;
+}
+
+
+// ── COUNTDOWN TIMERS ──
+const _cdTimers={};
+function startCountdown(targetMs,elId,label){
+  if(_cdTimers[elId])clearInterval(_cdTimers[elId]);
+  const el=document.getElementById(elId);if(!el)return;
+  el.innerHTML=`<div style="background:var(--card);border:1px solid rgba(6,214,160,.3);border-radius:14px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;box-shadow:0 0 32px rgba(6,214,160,.08)">
+    <div><div style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:1.6rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);line-height:1">${label}</div></div>
+    <div style="display:flex;gap:.5rem;align-items:flex-start">${['D','H','M','S'].map(u=>`<div style="text-align:center"><div id="${elId}-${u}" style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:2.4rem;font-weight:900;color:var(--teal);background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:10px;padding:.3rem .75rem;min-width:58px;text-align:center">--</div><div style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.52rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:4px">${u==='D'?'Days':u==='H'?'Hours':u==='M'?'Min':'Sec'}</div></div>`).join('')}</div>
+  </div>`;
+  const dEl=document.getElementById(elId+'-D'),hEl=document.getElementById(elId+'-H'),mEl=document.getElementById(elId+'-M'),sEl=document.getElementById(elId+'-S');
+  function tick(){
+    const diff=targetMs-Date.now();
+    if(diff<=0){['D','H','M','S'].forEach(u=>{const e=document.getElementById(elId+'-'+u);if(e){e.textContent='00';e.style.color='var(--dim)';}});clearInterval(_cdTimers[elId]);return;}
+    const p=n=>String(n).padStart(2,'0');
+    if(dEl)dEl.textContent=p(Math.floor(diff/86400000));
+    if(hEl)hEl.textContent=p(Math.floor((diff%86400000)/3600000));
+    if(mEl)mEl.textContent=p(Math.floor((diff%3600000)/60000));
+    if(sEl)sEl.textContent=p(Math.floor((diff%60000)/1000));
+  }
+  tick();_cdTimers[elId]=setInterval(tick,1000);
+}
+function initNFLDraftCountdown(){startCountdown(new Date('2026-04-25T00:00:00Z').getTime(),'rb-nfl-countdown','🏈 2026 NFL Draft');}
+function initLeagueDraftCountdown(startTime){
+  const label=S.leagueDraftStartTime>0?'🎯 Rookie Draft':'🏈 2026 NFL Draft';
+  startCountdown(startTime,'ov-draft-countdown',label);
+}
+
+// ── ROOKIE BOARD ──
+
+function showRookieBoard(){
+  document.getElementById('nav-ov').classList.remove('cur');
+  document.getElementById('nav-rb').classList.add('cur');
+  show('sc-rb');
+  document.getElementById('rb-ln').textContent=S.name||'—';
+  initNFLDraftCountdown();
+  if(!RB.loaded[RB.year])loadRookies(RB.year);
+  else renderRookies();
+}
+
+function setRbPos(pos,btn){
+  RB.pos=pos;
+  document.querySelectorAll('[id^="rb-pos-"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRookies();
+}
+
+async function loadRookies(year){
+  document.getElementById('rb-loading').style.display='block';
+  document.getElementById('rb-grid').innerHTML='';
+  try{
+    const isSF=S.teams?.some(t=>t.isSF)||false;
+    const fcUrl=`https://api.fantasycalc.com/values/current?isDynasty=true&numQbs=${isSF?2:1}&numTeams=12&ppr=1`;
+    const fcData=await fetch(fcUrl).then(r=>r.json()).catch(()=>[]);
+    let rookies=(fcData||[]).filter(item=>{const yoe=item.player?.maybeYoe;return yoe===0||yoe==='0';})
+      .filter(item=>['QB','RB','WR','TE'].includes(item.player?.position))
+      .sort((a,b)=>(b.value||0)-(a.value||0)).slice(0,60);
+    rookies=rookies.map((item,i)=>{
+      const sid=item.player?.sleeperId;const sp=S.pdb?.[sid]||{};
+      return{rank:i+1,name:item.player?.name||'Unknown',pos:item.player?.position||'WR',
+        nflTeam:sp.team||item.player?.maybeTeam||'—',college:sp.college||item.player?.maybeCollege||'—',
+        age:item.player?.maybeAge?Math.round(item.player.maybeAge):null,
+        fcValue:item.value||0,fcRank:item.overallRank||i+1,posRank:item.positionRank||null,
+        trend:item.trend30Day||0,sleeperId:sid,scoutBlurb:null,
+        teamFit:findBestFitTeams(item.player?.position||'WR',i+1),
+      };
+    });
+    RB.players=rookies;RB.loaded[year]=true;
+    updateRbCounts();
+    if(document.getElementById('sc-rb')?.classList.contains('active'))renderRookies();
+    // Refresh draft targets if deep dive is open
+    const dvScreen=document.getElementById('sc-dv');
+    if(dvScreen?.classList.contains('active')&&S._currentDiveTeam){
+      const el=document.getElementById('dv-draft-targets');
+      if(el){const h=buildDraftTargetsHTML(S._currentDiveTeam);el.innerHTML=h||'';}
+    }
+  }catch(e){
+    document.getElementById('rb-loading').innerHTML=`<span style="color:var(--red)">Failed to load rookie data</span>`;
+  }
+  document.getElementById('rb-loading').style.display='none';
+}
+
+function findBestFitTeams(pos,rankAmongRookies){
+  if(!S.teams?.length)return[];
+  return S.teams.map(t=>{
+    const pct=t.posPercentile?.[pos]??0.5;
+    if(pct<=0.20)return null;
+    const hasMatchingPick=(S.pickDetails?.[t.rosterId]||[])
+      .filter(p=>p.round===1&&p.slot&&Math.abs(p.slot-rankAmongRookies)<=4).length>0;
+    const score=pct+(hasMatchingPick?0.25:0);
+    return{team:t,score,pct,hasMatchingPick};
+  }).filter(Boolean).sort((a,b)=>b.score-a.score).slice(0,6).map(x=>{
+    const grade=x.pct>=0.85?'D':x.pct>=0.70?'C':x.pct>=0.55?'C+':x.pct>=0.38?'B':'B+';
+    return{name:x.team.teamName,color:x.team.color,grade,hasMatchingPick:x.hasMatchingPick};
+  });
+}
+
+async function loadScoutBlurb(player,idx){
+  if(player.scoutBlurb)return;
+  const el=document.getElementById('rb-blurb-'+idx);if(!el)return;
+  el.innerHTML='<span style="color:var(--teal);font-size:.68rem;font-family:\'Barlow Condensed\',sans-serif">⟳ Loading…</span>';
+  const ytQ=encodeURIComponent(player.name+' NFL '+player.pos+' 2026 draft highlights');
+  const ytLink=`<a href="https://www.youtube.com/results?search_query=${ytQ}" target="_blank" style="display:inline-flex;align-items:center;gap:.3rem;margin-top:.5rem;font-size:.63rem;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:.06em;color:#ef4444;text-decoration:none;padding:.18rem .45rem;border-radius:4px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25)">▶ YouTube Highlights</a>`;
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{role:'user',content:'Search for dynasty fantasy football scouting info on '+player.name+' ('+player.pos+(player.nflTeam&&player.nflTeam!=='—'?', '+player.nflTeam:player.college&&player.college!=='—'?', '+player.college:'')+') for 2026. Write a 3-sentence dynasty scouting report: athletic profile, NFL role projection, dynasty timeline.'}]})});
+    const data=await resp.json();
+    const text=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join(' ').trim();
+    const blurb=text||player.name+' is a '+player.pos+' prospect in the 2026 class.';
+    player.scoutBlurb=blurb;
+    el.innerHTML='<div style="font-size:.75rem;color:var(--mid);line-height:1.6;margin-bottom:.4rem">'+blurb+'</div>'+ytLink;
+  }catch(e){
+    player.scoutBlurb='unavailable';
+    el.innerHTML='<div style="font-size:.7rem;color:var(--dim);margin-bottom:.4rem">Scouting unavailable.</div>'+ytLink;
+  }
+}
+
+function updateRbCounts(){
+  ['QB','RB','WR','TE'].forEach(pos=>{
+    const el=document.getElementById('rb-'+pos.toLowerCase()+'-cnt');
+    if(el)el.textContent=RB.players.filter(p=>p.pos===pos).length;
+  });
+}
+
+function renderRookies(){
+  const players=RB.pos==='ALL'?RB.players:RB.players.filter(p=>p.pos===RB.pos);
+  const PC2={QB:'#60a5fa',RB:'#06d6a0',WR:'#a78bfa',TE:'#fbbf24'};
+  const maxVal=Math.max(...players.map(p=>p.fcValue),1);
+  document.getElementById('rb-meta').textContent=`${RB.year} Rookie Class · Dynasty Values · ${players.length} Players`;
+  document.getElementById('rb-grid').innerHTML=players.map((p,i)=>{
+    const c=PC2[p.pos]||'#7c8799';
+    const barW=Math.round((p.fcValue/maxVal)*100);
+    const valStr=p.fcValue>=1000?`${Math.round(p.fcValue/100)/10}k`:String(p.fcValue);
+    const trendC=p.trend>200?'var(--teal)':p.trend<-200?'var(--red)':'var(--dim)';
+    const trendStr=p.trend>200?`↑${Math.round(p.trend/100)/10}k`:p.trend<-200?`↓${Math.round(Math.abs(p.trend)/100)/10}k`:'';
+    const top3=p.teamFit.slice(0,3);const moreFits=p.teamFit.slice(3);
+    const fitTag=f=>`<span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.6rem;font-weight:700;padding:.15rem .45rem;border-radius:3px;background:${f.color}20;color:${f.color};border:1px solid ${f.color}40">${f.name.slice(0,14)}${f.hasMatchingPick?' 🎯':''} <span style="opacity:.7">${f.grade}</span></span>`;
+    const top3HTML=top3.map(fitTag).join('');
+    const moreHTML=moreFits.map(fitTag).join('');
+    const fitUID='fit-more-'+p.rank;
+    const ytQ=encodeURIComponent(p.name+' NFL 2026 highlights');
+    return`<div class="tc fu" style="border-top-color:${c};cursor:default">
+      <div class="tc-top">
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <div class="tc-av" style="background:${c};font-size:1rem;font-weight:900">${p.rank}</div>
+          <div><div class="tc-nm">${p.name}</div><div class="tc-ow">${p.pos} · ${p.nflTeam||p.college||'—'}</div></div>
+        </div>
+        <div class="ab" style="color:${c};border-color:${c}44;background:${c}15">${p.pos}</div>
+      </div>
+      <div style="margin-bottom:.85rem">
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+          <span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.62rem;font-weight:600;color:var(--dim);letter-spacing:.08em;text-transform:uppercase">Dynasty Value</span>
+          <span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.72rem;font-weight:700;color:${c}">${valStr}${trendStr?` <span style="color:${trendC}">${trendStr}</span>`:''}</span>
+        </div>
+        <div class="tc-bt" style="height:6px"><div class="tc-bf" style="width:${barW}%;background:${c}"></div></div>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap">
+        ${p.posRank?`<span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:4px;background:${c}15;color:${c}">#${p.posRank} ${p.pos}</span>`:''}
+        ${p.age?`<span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.65rem;color:var(--mid);padding:.15rem .5rem;border-radius:4px;background:var(--bg3)">${p.age}y</span>`:''}
+        ${p.college&&p.college!=='—'?`<span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.65rem;color:var(--dim);padding:.15rem .5rem;border-radius:4px;background:var(--bg3)">${p.college}</span>`:''}
+      </div>
+      <div style="margin-bottom:.85rem">
+        <div id="rb-blurb-${i}" style="font-size:.75rem;color:var(--mid);line-height:1.5;margin-bottom:.5rem;cursor:pointer" onclick="loadScoutBlurb(RB.players.find(x=>x.rank===${p.rank}),${i})">
+          <span style="color:var(--dim);font-size:.68rem;font-family:'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:.06em">▶ Click to load scouting report</span>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(p.name+' NFL 2026 highlights')}" target="_blank" style="display:inline-flex;align-items:center;gap:.25rem;font-size:.63rem;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:.06em;color:#ef4444;text-decoration:none;padding:.18rem .45rem;border-radius:4px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25)">▶ Highlights</a>
+          <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(p.name+' NFL combine 2026')}" target="_blank" style="display:inline-flex;align-items:center;gap:.25rem;font-size:.63rem;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:.06em;color:#ef4444;text-decoration:none;padding:.18rem .45rem;border-radius:4px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25)">▶ Combine</a>
+          <a href="https://www.google.com/search?q=${encodeURIComponent(p.name+' dynasty fantasy football scouting 2026')}" target="_blank" style="display:inline-flex;align-items:center;gap:.25rem;font-size:.63rem;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;letter-spacing:.06em;color:var(--teal);text-decoration:none;padding:.18rem .45rem;border-radius:4px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.25)">🔍 Scouting</a>
+        </div>
+      </div>
+      ${top3HTML?`<div style="padding-top:.75rem;border-top:1px solid var(--bd)">
+        <div style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem">Best Fit in League</div>
+        <div style="display:flex;gap:.3rem;flex-wrap:wrap;align-items:center">${top3HTML}${moreHTML?`<span id="${fitUID}" style="display:none;gap:.3rem;flex-wrap:wrap">${moreHTML}</span><button onclick="(function(el,btn){if(el.style.display==='none'){el.style.display='contents';btn.textContent='Show less';}else{el.style.display='none';btn.textContent='+'+(${moreFits.length})+' more';};})(document.getElementById('${fitUID}'),this)" style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.6rem;font-weight:700;color:var(--dim);background:none;border:1px solid var(--bd);border-radius:3px;padding:.15rem .45rem;cursor:pointer">+${moreFits.length} more</button>`:''}</div>
+      </div>`:''}
+    </div>`;
+  }).join('');
+  setTimeout(()=>{players.slice(0,3).forEach((p,i)=>loadScoutBlurb(p,i));},800);
+}
+
+// ── DRAFT TARGETS ──
+function buildDraftTargetsHTML(team){
+  if(!RB.players?.length)return'';
+  const curSeason=String(S.curSeason);
+  const picks2026=(S.pickDetails[team.rosterId]||[])
+    .filter(p=>String(p.season)===curSeason&&p.round>=1&&p.round<=4&&p.slot)
+    .sort((a,b)=>a.round-b.round||(a.slot||99)-(b.slot||99));
+  if(!picks2026.length)return'';
+  const PC2={QB:'#60a5fa',RB:'#06d6a0',WR:'#a78bfa',TE:'#fbbf24'};
+  const posLabel={QB:'QB room',RB:'backfield',WR:'WR corps',TE:'TE room'};
+  function needBonus(pos){
+    const pct=team.posPercentile?.[pos]??0.5;
+    return pct>=0.85?1.0:pct>=0.70?0.75:pct>=0.55?0.50:pct>=0.38?0.25:pct>=0.20?0.10:0;
+  }
+  function pickRange(round,slot){
+    const nT=S.teams?.length||12;
+    if(round===1)return{min:Math.max(1,slot-2),max:slot+2};
+    if(round===2)return{min:nT+1,max:nT*2+2};
+    if(round===3)return{min:nT*2+1,max:nT*3+2};
+    return{min:nT*3+1,max:nT*4+4};
+  }
+  const rows=picks2026.map(pick=>{
+    const range=pickRange(pick.round,pick.slot);
+    const candidates=RB.players.filter(p=>p.rank>=range.min&&p.rank<=range.max)
+      .map(p=>({...p,totalScore:(p.fcValue/(RB.players[0]?.fcValue||1))*0.60+needBonus(p.pos)*0.40}))
+      .sort((a,b)=>b.totalScore-a.totalScore);
+    if(!candidates.length)return`<div class="pp"><div class="pp-rk" style="color:var(--dim)">${pick.label}</div><div class="pp-nm" style="color:var(--dim)">No data for this slot</div><div class="pp-vbar"></div></div>`;
+    const best=candidates[0];
+    const c=PC2[best.pos]||'var(--teal)';
+    const pct=team.posPercentile?.[best.pos]??0.5;
+    const grade=pct>=0.85?'D':pct>=0.70?'C':pct>=0.55?'C+':pct>=0.38?'B':pct>=0.20?'B+':'A';
+    const gradeC=pct>=0.70?'var(--re)':pct>=0.38?'#60a5fa':'var(--teal)';
+    const isNeed=needBonus(best.pos)>=0.25;
+    const tag=isNeed?`<span style="font-size:.58rem;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;padding:.1rem .35rem;border-radius:3px;background:rgba(6,214,160,.15);color:var(--teal);border:1px solid rgba(6,214,160,.3)">NEED</span>`:`<span style="font-size:.58rem;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;padding:.1rem .35rem;border-radius:3px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3)">BPA</span>`;
+    const alt=candidates.find(p=>p.pos!==best.pos);
+    const altHTML=alt?`<span style="font-size:.65rem;color:var(--dim);font-family:'Barlow Condensed',sans-serif"> or <span style="color:${PC2[alt.pos]}">${alt.name}</span> (${alt.pos})</span>`:'';
+    const valStr=best.fcValue>=1000?`${Math.round(best.fcValue/100)/10}k`:String(best.fcValue);
+    const barW=Math.round((best.fcValue/(RB.players[0]?.fcValue||1))*100);
+    return`<div class="pp" style="align-items:flex-start;flex-direction:column;gap:.3rem;padding:.85rem 1rem">
+      <div style="display:flex;align-items:center;gap:.6rem;width:100%">
+        <div style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:var(--dim);min-width:70px">${pick.label}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
+            <span style="font-size:.85rem;font-weight:600;color:var(--tx)">${best.name}</span>
+            <span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.68rem;font-weight:700;color:${c}">${best.pos}</span>${tag}
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-top:.2rem">
+            <div style="flex:1;height:4px;background:var(--bg3);border-radius:2px"><div style="width:${barW}%;height:100%;background:${c};border-radius:2px"></div></div>
+            <span style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.68rem;font-weight:700;color:${c}">${valStr}</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.65rem;font-weight:700;color:${gradeC}">${grade}</div>
+          <div style="font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.56rem;color:var(--dim)">${posLabel[best.pos]}</div>
+        </div>
+      </div>
+      ${altHTML?`<div style="padding-left:76px">${altHTML}</div>`:''}
+    </div>`;
+  }).join('');
+  if(!rows)return'';
+  return`<div class="fu d5" style="margin-bottom:3rem">
+    <div class="sl"><div class="sl-t">2026 Draft Targets</div><div class="sl-r"></div><div class="sl-n">Best available · Positional need weighted</div></div>
+    <div class="psec">${rows}</div>
+  </div>`;
+}
+
+show('sc-land');
+</script>
+
+<!-- ROOKIE BOARD -->
+
+<div id="sc-rb" class="screen">
+  <nav class="anav">
+    <div class="logo" onclick="goHome()">Dynasty <span>Compass</span></div>
+    <div class="ndiv"></div>
+    <span class="ncrumb" onclick="show('sc-ov');document.getElementById('nav-ov').classList.add('cur');document.getElementById('nav-rb').classList.remove('cur')">League Overview</span>
+    <span style="color:var(--dim);margin:0 .5rem;font-size:.7rem">·</span>
+    <span class="ncrumb cur">Rookie Board</span>
+    <div class="nsp"></div><div class="nlname" id="rb-ln">—</div>
+  </nav>
+  <div class="pg">
+    <div id="rb-nfl-countdown" style="margin-bottom:1.5rem"></div>
+    <div class="ph fu d1">
+      <div>
+        <div class="ph-ey">Dynasty Compass · Rookie Analysis</div>
+        <div class="ph-t">Rookie <span>Board</span></div>
+        <div class="ph-m" id="rb-meta">Dynasty values · NFL draft rank · Team fit analysis</div>
+      </div>
+      <div class="phsts">
+        <div class="phst"><div class="phst-v" id="rb-qb-cnt">—</div><div class="phst-l">QBs</div></div>
+        <div class="phst"><div class="phst-v" id="rb-rb-cnt">—</div><div class="phst-l">RBs</div></div>
+        <div class="phst"><div class="phst-v" id="rb-wr-cnt">—</div><div class="phst-l">WRs</div></div>
+        <div class="phst"><div class="phst-v" id="rb-te-cnt">—</div><div class="phst-l">TEs</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <button id="rb-pos-ALL" class="itab active" onclick="setRbPos('ALL',this)">All</button>
+      <button id="rb-pos-QB" class="itab" onclick="setRbPos('QB',this)">QB</button>
+      <button id="rb-pos-RB" class="itab" onclick="setRbPos('RB',this)">RB</button>
+      <button id="rb-pos-WR" class="itab" onclick="setRbPos('WR',this)">WR</button>
+      <button id="rb-pos-TE" class="itab" onclick="setRbPos('TE',this)">TE</button>
+    </div>
+    <div id="rb-loading" style="display:none;padding:1rem;color:var(--teal);font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-size:.8rem">Loading rookie data…</div>
+    <div id="rb-grid" class="tgrid"></div>
+  </div>
+</div>
+</body>
+</html>
