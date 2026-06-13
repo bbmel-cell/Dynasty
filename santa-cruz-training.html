@@ -184,7 +184,7 @@
   <div id="log"></div>
 </section>
 
-<div class="footnote">Stored on this device via the artifact's storage. Garmin: Connect → Activities → Export CSV.</div>
+<div class="footnote">Saved on this device in your browser. Garmin: Connect → Activities → Export CSV.</div>
 
 <!-- Modals -->
 <div class="modal-bg" id="modalBg">
@@ -209,18 +209,19 @@ const HABITS = [
 let state = structuredClone(DEFAULTS);
 let mem = false; // memory-only fallback flag
 
-/* ---------- Persistence ---------- */
-async function load(){
+/* ---------- Persistence (localStorage) ---------- */
+const STORE_KEY='mtd:state';
+function load(){
   try{
-    const r = await window.storage.get('mtd:state');
-    if(r && r.value){ state = Object.assign(structuredClone(DEFAULTS), JSON.parse(r.value)); }
-  }catch(e){ /* no saved state yet, or storage unavailable */ }
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){ state = Object.assign(structuredClone(DEFAULTS), JSON.parse(raw)); }
+  }catch(e){ mem=true; /* no saved state yet, or storage unavailable */ }
 }
 let saveTimer=null;
 function save(){
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(async()=>{
-    try{ await window.storage.set('mtd:state', JSON.stringify(state)); }
+  saveTimer=setTimeout(()=>{
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
     catch(e){ mem=true; }
   },150);
 }
@@ -616,7 +617,7 @@ function parseGarmin(text){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 /* ---------- Boot ---------- */
-(async function(){ await load(); renderAll(); })();
+load(); renderAll();
 </script>
 </body>
 </html>
